@@ -10,21 +10,36 @@ class CreateFundingRequests < ActiveRecord::Migration
 		t.integer :funding_year
   		t.date :fcdl_date, :contract_exp_date, :last_date_to_invoice
 		t.text :orig_category_of_service
-		t.float :orig_r_monthly_cost, :orig_r_ineligible_cost, :orig_r_eligible_cost
+		t.decimal :orig_r_monthly_cost, :precision => 20, :scale => 6
+		t.decimal :orig_r_ineligible_cost, :precision => 20, :scale => 6
+		t.decimal :orig_r_eligible_cost, :precision => 20, :scale => 6
 		t.integer :orig_r_months_of_service
-		t.float :orig_r_annual_cost, :orig_nr_cost, :orig_nr_ineligible_cost
-		t.float :orig_nr_eligible_cost, :orig_total_cost
-		t.float :orig_discount, :orig_commitment_request
+		t.decimal :orig_r_annual_cost, :precision => 20, :scale => 6
+		t.decimal :orig_nr_cost, :precision => 20, :scale => 6
+		t.decimal :orig_nr_ineligible_cost, :precision => 20, :scale => 6
+		t.decimal :orig_nr_eligible_cost, :precision => 20, :scale => 6
+		t.decimal :orig_total_cost, :precision => 20, :scale => 6
+		t.decimal :orig_discount, :precision => 9, :scale => 6
+		t.decimal :orig_commitment_request, :precision => 20, :scale => 6
 		t.text :cmtd_category_of_service
-		t.float :committed_amount, :cmtd_r_monthly_cost, :cmtd_r_ineligible_cost
- 		t.float :cmtd_r_eligible_cost, :cmtd_r_months_of_service, :cmtd_r_annual_cost
-		t.float :cmtd_nr_cost, :cmtd_nr_ineligible_cost, :cmtd_nr_eligible_cost
-		t.float :cmtd_total_cost, :cmtd_discount, :cmtd_commitment_request
+		t.decimal :committed_amount, :precision => 20, :scale => 6 
+		t.decimal :cmtd_r_monthly_cost, :precision => 20, :scale => 6
+		t.decimal :cmtd_r_ineligible_cost, :precision => 20, :scale => 6
+ 		t.decimal :cmtd_r_eligible_cost, :precision => 20, :scale => 6
+ 		t.integer :cmtd_r_months_of_service
+ 		t.decimal :cmtd_r_annual_cost, :precision => 20, :scale => 6
+		t.decimal :cmtd_nr_cost, :precision => 20, :scale => 6
+		t.decimal :cmtd_nr_ineligible_cost, :precision => 20, :scale => 6
+		t.decimal :cmtd_nr_eligible_cost, :precision => 20, :scale => 6
+		t.decimal :cmtd_total_cost, :precision => 20, :scale => 6
+		t.decimal :cmtd_discount, :precision => 9, :scale => 6
+		t.decimal :cmtd_commitment_request, :precision => 20, :scale => 6
 		t.text :cmtd_471_ssd, :invoicing_mode, :site_identifier	
-		t.float :total_authorized_disbursement
+		t.decimal :total_authorized_disbursement, :precision => 20, :scale => 6
 		t.text :wave_number, :appeal_wave_number
 		t.boolean :does_not_provide_broadband 
-		t.float :pct_classrooms_with_wireless_access, :pct_classrooms_with_wired_access
+		t.decimal :pct_classrooms_with_wireless_access, :precision => 7, :scale => 4
+		t.decimal :pct_classrooms_with_wired_access, :precision => 7, :scale => 4
 		t.boolean :last_mile_connections, :backbone_only
         
         t.timestamps   

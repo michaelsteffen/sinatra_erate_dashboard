@@ -21,21 +21,23 @@ end
 get "/funding_requests/bulkupload" do
   	FundingRequest.delete_all
   	frs_csv_text = File.read(File.join(settings.root, 'user_uploads', 'funding_requests.csv'))
+  	frs_csv_text = frs_csv_text.gsub(/\$/, '') 		# eliminate dollar signs to allow import of money values
 	frs_csv = CSV.parse(frs_csv_text, :headers => true)
+  	 	
   	frs_csv.each do |row|
-  		renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMappings[key] || key, value] } ]
+  		renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
   		FundingRequest.create(renamed_keys_row)
  	end
  	
- 	Connections.delete_all
-  	connections_csv_text = File.read(File.join(settings.root, 'user_uploads', 'connections.csv'))
-	connections_csv = CSV.parse(connections_csv_text, :headers => true)
-  	connections_csv.each do |row|
-  		renamed_keys_row = Hash[ row.map { |key, value| [ConnectionsMapping[key] || key, value] } ]
-  		Connections.create(renamed_keys_row)
- 	end
+ 	#Connections.delete_all
+  	#connections_csv_text = File.read(File.join(settings.root, 'user_uploads', 'connections.csv'))
+	#connections_csv = CSV.parse(connections_csv_text, :headers => true)
+  	#connections_csv.each do |row|
+  	#	renamed_keys_row = Hash[ row.map { |key, value| [ConnectionsMapping[key] || key, value] } ]
+  	#	Connections.create(renamed_keys_row)
+ 	#end
   	
-  	@upload_status = "#{frs_csv.length} records in funding request csv file; #{frs_csv.length} records in connections csv file."	
+  	@upload_status = "Replaced FRN database with #{frs_csv.length} new records in funding request csv file."	
   	erb :"/funding_requests/bulkupload"
 end
 
