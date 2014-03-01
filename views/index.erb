@@ -1,23 +1,32 @@
-<p>Number of Applications: <%= @basic_dashboard.num_applications %></p>
+<h3><strong>Applications:</strong> <%= @basic_dashboard.num_applications %></h3>
 
-<table>
+<p><table class="table table-hover">
+  <thead><tr>
+    <th>Application Type</th>
+    <th>Applications</th>
+  </tr></thead>
 <% @basic_dashboard.application_count_by_type.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
     <td><%= app_type["count"] %></td>
   </tr>
 <% end %>
-</table>
+</table></p>
 
-<p>Number of Applicants: <%= @basic_dashboard.num_applicants %></p>
 
-<table>
+<h3><strong>Applicants:</strong> <%= @basic_dashboard.num_applicants %></h3>
+
+<p><table class="table table-hover">
+  <thead><tr>
+    <th>Application Type</th>
+    <th>Applicants</th>
+  </tr></thead>
 <% @basic_dashboard.applicant_count_by_apptype.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
     <td><%= app_type["count"] %></td>
   </tr>
 <% end %>
-</table>
+</table></p>
 
-<p>*Some applicants submit multiple application types, so are double counted in this table.</p>
+<p><em>*Some applicants submit multiple application types, so are double counted in this table.</em></p>
