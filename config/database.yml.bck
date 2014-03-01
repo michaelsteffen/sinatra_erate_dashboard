@@ -1,0 +1,8 @@
+development:
+  adapter: postgresql
+  database: sinatra_erate_dashboard
+  username: <%= ENV['PG_USER'] %>
+  password: <%= ENV['PG_PASS'] %>
+  host: localhost
+  
+# No production info since Heroku autogenerates

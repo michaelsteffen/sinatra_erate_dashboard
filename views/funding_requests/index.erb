@@ -1,0 +1,8 @@
+<ul>
+<% @funding_requests.each do |funding_request| %>
+ <li>
+   <a href="/posts/<%= funding_request.id %>"><%= funding_request.frn %></a>
+   Applicant: <%= funding_request.applicant_name %>
+ </li>
+<% end %>
+</ul>
