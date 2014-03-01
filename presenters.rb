@@ -1,7 +1,7 @@
 class BasicDashboardPresenter
   @@queries = {}
   attr_reader :num_applications, :application_count_by_type, :num_applicants, :applicant_count_by_apptype 
-  attr_reader :requested_funding, :requests_by_apptype
+  attr_reader :requested_funding, :requests_by_apptype, :requests_by_discount
 
   def initialize
 	self.initialize_query_strings
@@ -12,6 +12,7 @@ class BasicDashboardPresenter
   	@applicant_count_by_apptype = FundingRequest.connection.select_all(@@queries[:applicants_by_apptype_query])
   	@requested_funding = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["sum"]
   	@requests_by_apptype = FundingRequest.connection.select_all(@@queries[:requests_by_apptype_query])
+  	@requests_by_discount = FundingRequest.connection.select_all(@@queries[:requests_by_discount_query])
   end
   
   def initialize_query_strings
@@ -62,6 +63,18 @@ class BasicDashboardPresenter
 		WHERE f471_form_status = 'CERTIFIED'
 		GROUP BY application_type
 		ORDER BY application_type;
+		endquery
+
+	@@queries[:requests_by_discount_query] = <<-endquery					
+		SELECT 
+			TRUNC(orig_discount/10.) * 10. AS discount_band,
+			SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_commitment_request END) AS p1_request,
+			SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_commitment_request END) AS p2_request,
+			SUM(orig_total_cost) AS total_request
+		FROM funding_requests
+		WHERE f471_form_status = 'CERTIFIED'
+		GROUP BY discount_band
+		ORDER BY discount_band;
 		endquery
   end
 end

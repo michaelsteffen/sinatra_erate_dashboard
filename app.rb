@@ -5,12 +5,15 @@
 
 require 'sinatra'
 require 'sinatra/activerecord'
+require 'action_view/helpers/number_helper'
 require 'csv'
 
 require './config/environments' 	# database configuration
 require './config/csv_mappings'		# mapping of USAC csv column titles to db columns
 require './models'
 require './presenters'
+
+include ActionView::Helpers::NumberHelper
 
 get "/" do
   @title = "Basic Dashboard"

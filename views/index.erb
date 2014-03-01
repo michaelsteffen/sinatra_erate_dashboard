@@ -1,8 +1,11 @@
 <h1>Form 471 Summary Statistics</h1>
 
-<h3>Applications: <strong><%= @basic_dashboard.num_applications %></strong></h3>
 
-<p><table class="table table-hover table-condensed">
+<div class="page-header">
+<h3>Applications: <strong><%= number_with_delimiter(@basic_dashboard.num_applications) %></strong></h3>
+</div>
+
+<table class="table table-hover table-condensed">
   <thead><tr>
     <th>Application Type</th>
     <th>Applications</th>
@@ -10,12 +13,14 @@
 <% @basic_dashboard.application_count_by_type.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
-    <td><%= app_type["count"] %></td>
+    <td><%= number_with_delimiter(app_type["count"]) %></td>
   </tr>
 <% end %>
-</table></p>
+</table>
 
-<h3>Applicants: <strong><%= @basic_dashboard.num_applicants %></strong></h3>
+<div class="page-header">
+<h3>Applicants: <strong><%= number_with_delimiter(@basic_dashboard.num_applicants) %></strong></h3>
+</div>
 
 <p><table class="table table-hover table-condensed">
   <thead><tr>
@@ -25,14 +30,16 @@
 <% @basic_dashboard.applicant_count_by_apptype.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
-    <td><%= app_type["count"] %></td>
+    <td><%= number_with_delimiter(app_type["count"]) %></td>
   </tr>
 <% end %>
 </table></p>
 
 <p><small><em>Some applicants submit multiple application types, so are double counted in this table.</em></small></p>
 
+<div class="page-header">
 <h3>Requested Funding: <strong>$<%= (@basic_dashboard.requested_funding.to_f / 1000000).round(1) %> million</strong></h3>
+</div>
 
 <p><table class="table table-hover table-condensed">
   <thead><tr>
@@ -44,6 +51,23 @@
 <% @basic_dashboard.requests_by_apptype.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
+    <td>$ <%= (app_type["p1_request"].to_f / 1000).round(0) %></td>
+    <td>$ <%= (app_type["p2_request"].to_f / 1000).round(0) %></td>
+    <td>$ <%= (app_type["total_request"].to_f / 1000).round(0) %></td>
+  </tr>
+<% end %>
+</table></p>
+
+<p><table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>Discount Band</th>
+    <th>P1 Requests</th>
+    <th>P2 Requests</th>
+    <th>Total Requests</th>
+  </tr></thead>
+<% @basic_dashboard.requests_by_discount.each do |app_type| %>
+  <tr>
+    <td><%= app_type["discount_band"] %></td>
     <td>$ <%= (app_type["p1_request"].to_f / 1000).round(0) %></td>
     <td>$ <%= (app_type["p2_request"].to_f / 1000).round(0) %></td>
     <td>$ <%= (app_type["total_request"].to_f / 1000).round(0) %></td>
