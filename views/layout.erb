@@ -30,12 +30,18 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">FCC E-Rate Dashboard</a>
+          <a class="navbar-brand" href="/">Test E-Rate Dashboard</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>
-            <li class="active"><a href="/funding_requests/bulkupload">Bulk Upload</a></li>
+            <li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dashboards <b class="caret"></b></a>
+            	<ul class="dropdown-menu">
+            		<li><a href="/">Form 471 Stats</a></li>
+            		<li><a href="/dashboards/item24">Item 24 Stats</a></li>
+            	</ul>
+            </li>
+            <li><a href="/funding_requests/bulkupload">Data Upload</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

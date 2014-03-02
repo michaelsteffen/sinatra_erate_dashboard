@@ -1,5 +1,6 @@
 <h1>Form 471 Summary Statistics</h1>
 
+<p>All information below reflects values as entered by applicants, so there will be some screwy results (e.g., discounts below 20%).</p>
 
 <div class="page-header">
 <h3>Applications: <strong><%= number_with_delimiter(@basic_dashboard.num_applications) %></strong></h3>
@@ -70,7 +71,7 @@
     		else
     			app_type["discount_band"] 
     		end
-    		%></td>
+    		%>%</td>
     <td>$ <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></td>
     <td>$ <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></td>
     <td>$ <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></td>
