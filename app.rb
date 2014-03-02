@@ -27,13 +27,24 @@ end
 get "/funding_requests/bulkupload" do
   	FundingRequest.delete_all
   	frs_csv_text = File.read(File.join(settings.root, 'user_uploads', 'funding_requests.csv'))
-  	frs_csv_text = frs_csv_text.gsub(/\$/, '') 		# eliminate dollar signs to allow import of money values
 	frs_csv = CSV.parse(frs_csv_text, :headers => true)
-  	 	
+  	
+#  	dummy_renamed_keys = Hash[ frs_csv[0].map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
+# 	dummy_funding_request = FundingRequest.new(dummy_renamed_keys)
+# 	dummy_renamed_keys.each_key do |key|
+# 		puts key.to_s + ": " + (eval("dummy_funding_request.#{ key }.class")).to_s
+# 	end
+
   	frs_csv.each do |row|
-  		renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
-  		FundingRequest.create(renamed_keys_row)
- 	end
+ 		renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
+ 		dummy_funding_request = FundingRequest.new(renamed_keys_row)
+ 		renamed_keys_row.each_key do |key|			# eliminate dollar signs and commas for numerical fields
+ 		  	if ["BigDecimal","Fixnum"].include?(eval( "dummy_funding_request.#{ key }.class").to_s)
+ 		  		renamed_keys_row[key] = renamed_keys_row[key].gsub(/[$,]/, '') 	
+ 		  	end	
+		end
+ 		FundingRequest.create(renamed_keys_row)
+	end
  	
  	#Connections.delete_all
   	#connections_csv_text = File.read(File.join(settings.root, 'user_uploads', 'connections.csv'))
