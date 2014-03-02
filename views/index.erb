@@ -38,7 +38,7 @@
 <p><small><em>Some applicants submit multiple application types, so are double counted in this table.</em></small></p>
 
 <div class="page-header">
-<h3>Requested Funding: <strong>$<%= (@basic_dashboard.requested_funding.to_f / 1000000).round(1) %> million</strong></h3>
+<h3>Requested Funding: <strong>$<%= (@basic_dashboard.requested_funding["all"].to_f / 1000000).round(1) %> million</strong></h3>
 </div>
 
 <p><table class="table table-hover table-condensed">
@@ -56,23 +56,53 @@
     <td>$ <%= (app_type["total_request"].to_f / 1000).round(0) %></td>
   </tr>
 <% end %>
-</table></p>
-
-<p><table class="table table-hover table-condensed">
+  <tr><td style="border: 0px"><br></td></tr>
   <thead><tr>
-    <th>Discount Band</th>
-    <th>P1 Requests</th>
-    <th>P2 Requests</th>
-    <th>Total Requests</th>
+    <th style="border-top: 0px">Discount Band</th>
+    <th style="border-top: 0px">P1 Requests</th>
+    <th style="border-top: 0px">P2 Requests</th>
+    <th style="border-top: 0px">Total Requests</th>
   </tr></thead>
 <% @basic_dashboard.requests_by_discount.each do |app_type| %>
   <tr>
-    <td><%= app_type["discount_band"] %></td>
+    <td><%= if (app_type["discount_band"].to_i < 90) 
+    			app_type["discount_band"] + '-' + (app_type["discount_band"].to_i + 9).to_s
+    		else
+    			app_type["discount_band"] 
+    		end
+    		%></td>
     <td>$ <%= (app_type["p1_request"].to_f / 1000).round(0) %></td>
     <td>$ <%= (app_type["p2_request"].to_f / 1000).round(0) %></td>
     <td>$ <%= (app_type["total_request"].to_f / 1000).round(0) %></td>
   </tr>
 <% end %>
+</table></p>
+
+<p><small><em>All dollar amounts in thousands</em></small></p>
+
+<div class="page-header">
+<h3>Pre-Discount Costs: <strong>$<%= (@basic_dashboard.prediscount_costs["all"].to_f / 1000000).round(1) %> million</strong></h3>
+</div>
+
+<p><table class="table table-hover table-condensed">
+  <thead><tr>
+  	<th></th>
+    <th>Priority 1</th>
+    <th>Priority 2</th>
+    <th>All Requests</th>
+  </tr></thead>
+  <tr>
+  	<td><strong>Pre-Discount Costs</strong></td>
+    <td>$ <%= number_with_delimiter((@basic_dashboard.prediscount_costs["all"].to_f / 1000).round(0)) %></td>
+    <td>$ <%= number_with_delimiter((@basic_dashboard.prediscount_costs["p1"].to_f / 1000).round(0)) %></td>
+    <td>$ <%= number_with_delimiter((@basic_dashboard.prediscount_costs["p2"].to_f / 1000).round(0)) %></td>
+  </tr>
+  <tr>
+    <td><strong>Average Discount</strong></td>
+    <td><%= (@basic_dashboard.avg_discount["all"] * 100).to_i %>%</td>
+    <td><%= (@basic_dashboard.avg_discount["p1"] * 100).to_i %>%</td>
+    <td><%= (@basic_dashboard.avg_discount["p2"] * 100).to_i %>%</td>
+  </tr>
 </table></p>
 
 <p><small><em>All dollar amounts in thousands</em></small></p>

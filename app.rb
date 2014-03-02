@@ -1,7 +1,10 @@
 #todo:
+# - importing of dollar values still broken
+# - get import of connections working
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
-# - move CSV mappings into FundingRequest and Connections models
-# - move to database.yml for configuration
+# - refactor: move CSV mappings into FundingRequest and Connections models
+# - refactor: move to database.yml for configuration
+# - refactor: fix table styling for hidden row
 
 require 'sinatra'
 require 'sinatra/activerecord'
