@@ -1,2 +1,9 @@
 <h1>Bulk Upload</h1>
-<p><strong>Status:</strong> <%= @upload_status %></p>
+
+<h4>Errors:</h4>
+
+<p>
+<% @upload_errors.each do |error| %>
+	<%= error %><br>
+<% end %>
+</p>

@@ -56,9 +56,15 @@ FundingRequestsMapping = {
 	"% Classrooms with Wireless Access" => :pct_classrooms_with_wireless_access,
  	"% Classrooms with Wired Access" => :pct_classrooms_with_wired_access,
 	"Last Mile Connections?" => :last_mile_connections,
- 	"Backbone Only?"=> :backbone_only,
+ 	"Backbone Only?"=> :backbone_only
 }
 
 ConnectionsMapping = {
+	"FRN" => :frn,
+	"471 Application Number" => :f471_application_number,
+	"BEN" => :ben,
+	"Applicant Name" => :applicant_name,
+	"Type of Connections" => :type_of_connections,
+	"Number of Lines" => :number_of_lines,
+	"Download Speed" => :download_speed
 }
-
