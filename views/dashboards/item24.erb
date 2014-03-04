@@ -1,0 +1,45 @@
+<h1>Item 24 Summary Statistics</h1>
+
+<p>All information below reflects values as entered by applicants, so there will be some screwy results (e.g., off by 100x errors).</p>
+
+<div class="page-header">
+<h3>Broadband Funding Requests: <strong><%= (@item24_dashboard.percent_of_p1 * 100).round(0) %>%</strong> of P1 requests
+($<%= (@item24_dashboard.item24_requests.to_f / 1000000).round(0) %> million)</h3>
+</div>
+<p>Defined as total requests associated with item 24s, excluding cellular-only requests.</p>
+<br>
+
+<table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>Connection Type</th>
+    <th>Requests</th>
+  </tr></thead>
+<% @item24_dashboard.requests_by_type.each do |conn_type| %>
+  <tr>
+    <td><%= conn_type["type_of_connections"] %></td>
+    <td>$ <%= number_with_delimiter(((conn_type["sum"]).to_f / 1000).round(0)) %></td>
+  </tr>
+<% end %>
+  <tr>
+    <td><i>Multiple Connection Types</i></td>
+    <td>$ <%= number_with_delimiter((@item24_dashboard.multiple_types.to_f / 1000).round(0)) %></td>
+  </tr>
+  <tr><td style="border: 0px"><br></td></tr>
+  <thead><tr>
+    <th style="border-top: 0px">Connection Speed</th>
+    <th style="border-top: 0px">Requests</th>
+  </tr></thead>
+<% @item24_dashboard.requests_by_speed.each do |tier| %>
+  <tr>
+    <td><%= @item24_dashboard.speed_tier_names[tier["speed_tier"]] %></td>
+    <td>$ <%= number_with_delimiter(((tier["sum"]).to_f / 1000).round(0)) %></td>
+  </tr>
+<% end %>  
+  <tr>
+    <td><i>Multiple Connection Speeds</i></td>
+    <td>$ <%= number_with_delimiter((@item24_dashboard.multiple_speeds.to_f / 1000).round(0)) %></td>
+  </tr>
+
+</table>
+
+<p><small><em>All dollar amounts in thousands</em></small></p>

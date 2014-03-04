@@ -12,8 +12,8 @@ require 'csv'
 
 require './config/environments' 	# database configuration
 require './config/csv_mappings'		# mapping of USAC csv column titles to db columns
-require './models'
-require './presenters'
+Dir["./models/*.rb"].each {|file| require file }
+Dir["./presenters/*.rb"].each {|file| require file }
 
 include ActionView::Helpers::NumberHelper
 
@@ -21,6 +21,12 @@ get "/" do
   @title = "Basic Dashboard"
   @basic_dashboard = BasicDashboardPresenter.new
   erb :"index"
+end
+
+get "/dashboards/item24" do
+  @title = "Item 24 Dashboard"
+  @item24_dashboard = Item24DashboardPresenter.new
+  erb :"/dashboards/item24"
 end
 
 get "/funding_requests/bulkupload" do
@@ -81,9 +87,9 @@ end
 helpers do
   def title
     if @title
-      "FCC E-rate Dashboard: #{@title}"
+      "Test E-rate Dashboard: #{@title}"
     else
-      "FCC E-rate Dashboard"
+      "Test E-rate Dashboard"
     end
   end
 end

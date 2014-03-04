@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20140225021203) do
     t.text     "applicant_name"
     t.text     "type_of_connections"
     t.integer  "number_of_lines"
-    t.text     "download_speed"
+    t.decimal  "download_speed"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
