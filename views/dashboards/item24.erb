@@ -1,6 +1,6 @@
 <h1>Item 24 Summary Statistics</h1>
 
-<p>All information below reflects values as entered by applicants, so there will be some screwy results (e.g., off by 100x errors).</p>
+<p>All information below reflects values as entered by applicants, so it includes some screwy data (e.g., off by 100x errors).</p>
 
 <div class="page-header">
 <h3>Broadband Funding Requests: <strong><%= (@item24_dashboard.percent_of_p1 * 100).round(0) %>%</strong> of P1 requests
@@ -43,3 +43,28 @@
 </table>
 
 <p><small><em>All dollar amounts in thousands</em></small></p>
+
+<div class="page-header">
+<h3>Broadband Prices</h3>
+</div>
+
+<table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>Connection Type</th>
+    <th>Lines</th>
+    <th>Median Price</th>
+    <th>25th Percentile</th>
+    <th>75th Percentile</th>
+  </tr></thead>
+<% @item24_dashboard.conn_types.each do |ctype| %>
+  <tr>
+  	<td><%= ctype %></td>
+    <td><%= number_with_delimiter(@item24_dashboard.single_ctype_stats[ctype]['lines']) %></td>
+    <td>$ <%= number_with_delimiter(@item24_dashboard.single_ctype_stats[ctype]['price_median'].round(0).to_i) %></td>
+    <td>$ <%= number_with_delimiter(@item24_dashboard.single_ctype_stats[ctype]['price_p25'].round(0).to_i) %></td>
+    <td>$ <%= number_with_delimiter(@item24_dashboard.single_ctype_stats[ctype]['price_p75'].round(0).to_i) %></td>
+  </tr>
+<% end %> 
+</table> 
+
+<p><small><em>Data based on single connection type & connection bandwidth FRNs only.</em></small></p>
