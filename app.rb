@@ -1,8 +1,12 @@
 # todo:
+# - make front page values live
+# - make the upload pages
+# - add activerecord multiple insert to speed up data uploads
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models
 # - refactor: move to database.yml for configuration
 # - refactor: fix table styling for hidden row
+# - eliminate use of <br> for spacing
 
 require 'sinatra'
 require 'sinatra/activerecord'
@@ -38,23 +42,35 @@ get "/dashboards/jump_the_line" do
   erb :"/dashboards/jump_the_line"
 end
 
-get "/funding_requests/bulkupload" do
+get "/data_upload/new_upload" do
+  @title = "Data Upload"
+  erb :"/data_upload/new_upload"
+end
+
+post "/data_upload/new_upload" do
+	drt_file = "user_uploads/" + params['drt-file'][:filename].to_s
+  	File.open(drt_file, "w+") do |f|
+		f.write(params['drt-file'][:tempfile].read)
+	end
+
+	item24_file = 'user_uploads/' + params['item24-file'][:filename].to_s
+  	File.open(item24_file, "w+") do |f|
+		f.write(params['drt-file'][:tempfile].read)
+	end
+end
+
+get "/data_upload/upload_log" do
+  @title = "Upload Log"
+  erb :"/data_upload/upload_log"
+end
+
+get "/bulkupload-doit" do
 	@upload_errors = []
 	
   	FundingRequest.delete_all
+  	# USAC .csv files have a "byte order mark" gremlin, so need odd encoding
   	frs_csv_text = File.read(File.join(settings.root, 'user_uploads', 'funding_requests.csv'), encoding: "bom|utf-8")
-	#frs_csv_text.gsub!(/\xEF\xBB\xBF/, '') 		#USAC .csv files have this "byte order mark" gremlin; get rid of it
 	frs_csv = CSV.parse(frs_csv_text, :headers => true)
-
-#	puts FundingRequestsMapping
-	frs_csv[0].each do |key, value|
-		puts [FundingRequestsMapping[key], value]
-		key.each_byte do |c|
-   			puts c
-		end
-	end
-#	puts frs_csv[0]
-#	puts Hash[ frs_csv[0].map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
 
   	frs_csv.each do |row|
  		renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
@@ -73,8 +89,8 @@ get "/funding_requests/bulkupload" do
 	end
  	
  	Connections.delete_all
+ 	# USAC .csv files have a "byte order mark" gremlin, so need odd encoding
   	connections_csv_text = File.read(File.join(settings.root, 'user_uploads', 'connections.csv'), encoding: "bom|utf-8")
-	#connections_csv_text.gsub!(/\xEF\xBB\xBF/, '') 		#USAC .csv files have this "byte order mark" gremlin; get rid of it
 	connections_csv = CSV.parse(connections_csv_text, :headers => true)
 	
   	connections_csv.each do |row|
@@ -96,13 +112,7 @@ get "/funding_requests/bulkupload" do
    	@successful_frn_uploads = 0
   	@successful_connections_uploads = 0
   			
-  	erb :"/funding_requests/bulkupload"
-end
-
-get "/funding_requests/" do
-  @funding_requests = FundingRequest.order("frn DESC")
-  @title = "FRN Index"
-  erb :"/funding_requests/index"
+	erb :"/data_upload/upload_log"
 end
 
 helpers do

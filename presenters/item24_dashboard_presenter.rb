@@ -8,7 +8,7 @@ class Item24DashboardPresenter
 	self.initialize_query_strings
 
   	@item24_requests = FundingRequest.connection.select_all(@@queries[:item24_requests_query])[0]["sum"]
-  	@percent_of_p1 = @item24_requests.to_f / FundingRequest.connection.select_all(@@queries[:total_requests_query])[0]["sum"].to_f
+  	@percent_of_p1 = @item24_requests.to_f / FundingRequest.connection.select_all(@@queries[:total_p1requests_query])[0]["sum"].to_f
    	
    	@requests_by_type = FundingRequest.connection.select_all(@@queries[:requests_by_type_query])
    	@multiple_types = FundingRequest.connection.select_all(@@queries[:multiple_types_query])[0]["sum"]
@@ -50,10 +50,11 @@ class Item24DashboardPresenter
 		WHERE f471_form_status = 'CERTIFIED';
 		endquery
 
-  	@@queries[:total_requests_query] = <<-endquery
+  	@@queries[:total_p1requests_query] = <<-endquery
 		SELECT SUM(orig_commitment_request) 
 		FROM funding_requests
-		WHERE f471_form_status = 'CERTIFIED';
+		WHERE f471_form_status = 'CERTIFIED' AND 
+			orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS')
 		endquery
 		
 	@@queries[:requests_by_type_query] = <<-endquery

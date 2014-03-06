@@ -7,18 +7,7 @@
     <meta name="author" content="">
     <title><%= title %></title>
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 75px;
-      }
-      .starter-template {
-        padding: 40px 15px;
-        text-align: center;
-      }
-      .container {
-        max-width:1000px;
-      }
-    </style>
+    <link href="/custom_css.css" rel="stylesheet">
   </head>
   
   <body>
@@ -39,10 +28,16 @@
             	<ul class="dropdown-menu">
             		<li><a href="/dashboards/form471">Form 471 Stats</a></li>
             		<li><a href="/dashboards/item24">Item 24 Stats</a></li>
-            		<li><a href="/dashboards/jump_the_line">"Jump the Line" Dashboard</a></li>
+            		<li><a href="/dashboards/jump_the_line">Jump-the-Line Progress</a></li>
             	</ul>
             </li>
-            <li><a href="/funding_requests/bulkupload">Data Upload</a></li>
+            <li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Upload <b class="caret"></b></a>
+            	<ul class="dropdown-menu">
+            		<li><a href="/data_upload/new_upload">New Upload</a></li>
+            		<li><a href="/data_upload/upload_log">Upload Log</a></li>
+            </ul>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
