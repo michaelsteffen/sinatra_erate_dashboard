@@ -58,15 +58,15 @@ post "/data_upload/new_upload" do
 
 	if params.has_key?('drt-file') and params.has_key?('item24-file') 
 		drt_file = "user_uploads/" + params['drt-file'][:filename].to_s
-		File.open(drt_file, "w+") do |f|
-			f.write(params['drt-file'][:tempfile].read)
-		end
+		f = File.new(drt_file, "w") 
+		f.write(params['drt-file'][:tempfile].read)
+		f.close
 
-		item24_file = 'user_uploads/' + params['item24-file'][:filename].to_s
-		File.open(item24_file, "w+") do |f|
-			f.write(params['item24-file'][:tempfile].read)
-		end
-		
+		item24_file = "user_uploads/" + params['item24-file'][:filename].to_s
+		f = File.new(item24_file, "w")
+		f.write(params['item24-file'][:tempfile].read)
+		f.close
+
 		# USAC .csv files have a "byte order mark" gremlin, so need odd encoding
 		frs_csv_text = File.read(drt_file, encoding: "bom|utf-8")
 		frs_csv = CSV.parse(frs_csv_text, :headers => true)
@@ -135,7 +135,7 @@ post "/data_upload/new_upload" do
 		
 		redirect "/data_upload/upload_log", :success => "Success! Data import has started. You can reload this log page to monitor progress."
 	else
-		flash.now[:error] = "You must upload both a drt file and the associated item 24 file together."
+		flash.now[:error] = "Ack! You must upload both a drt file and the associated item 24 file together."
 		erb :"/data_upload/new_upload"
 	end
 end
