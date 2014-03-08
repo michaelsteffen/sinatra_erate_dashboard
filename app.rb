@@ -1,6 +1,9 @@
 # todo:
 # - add totals to tables
-# - do initial error checking of upload file headers
+# - better error handling for uplaod files
+#		- check that files are actually CSV files
+# 		- do initial error checking of upload file headers
+#		- catch other errors??
 # - add activerecord multiple insert to speed up data uploads
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models?
@@ -111,7 +114,7 @@ post "/data_upload/new_upload" do
 			drt_upload.import_status = "Complete"
 			drt_upload.save
 	
-			item24_upload.import_status = "In Process"
+			item24_upload.import_status = "In Progress"
 			item24_upload.save
 			Connection.delete_all	
 			connections_csv.each_with_index do |row, i|
@@ -140,7 +143,7 @@ post "/data_upload/new_upload" do
 			item24_upload.save
 		end
 		
-		redirect "/data_upload/upload_log", :success => "<strong>Success!</strong> Your data import has started. You can reload this page to monitor progress.  Dashboards will be unavailable until the import completes."
+		redirect "/data_upload/upload_log", :success => "<strong>Success!</strong> Your data import has started. Reload this page to monitor progress.  Dashboards will be unavailable until the import completes."
 	else
 		flash.now[:error] = "<strong>Ack!</strong> You must upload both a drt file and the associated item 24 file together."
 		erb :"/data_upload/new_upload"
