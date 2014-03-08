@@ -35,3 +35,9 @@ body {
 .narrow-text-input {
 	max-width: 400px;
 }
+
+@media print {
+    body {
+		padding-top: 0px;
+	}
+}

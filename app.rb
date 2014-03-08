@@ -1,15 +1,21 @@
 # todo:
 # - make front page values live
-# - make the upload pages
+# - add totals to tables
+# - do initial error checking of upload file headers
 # - add activerecord multiple insert to speed up data uploads
+# - add processing file warning
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models
 # - refactor: move to database.yml for configuration
 # - refactor: fix table styling for hidden row
+# - refactor: turn large front page text into classes
+# - refactor: add loop for upload types to upload log page
 # - eliminate use of <br> for spacing
 
 require 'sinatra'
 require 'sinatra/activerecord'
+require 'sinatra/flash'
+require 'sinatra/redirect_with_flash'
 require 'action_view/helpers/number_helper'
 require 'csv'
 
@@ -19,6 +25,7 @@ Dir["./models/*.rb"].each {|file| require file }		# all models
 Dir["./presenters/*.rb"].each {|file| require file }	# all presenters
 
 include ActionView::Helpers::NumberHelper
+enable :sessions
 
 get "/" do
   @title = "Welcome"
@@ -48,71 +55,96 @@ get "/data_upload/new_upload" do
 end
 
 post "/data_upload/new_upload" do
-	drt_file = "user_uploads/" + params['drt-file'][:filename].to_s
-  	File.open(drt_file, "w+") do |f|
-		f.write(params['drt-file'][:tempfile].read)
-	end
 
-	item24_file = 'user_uploads/' + params['item24-file'][:filename].to_s
-  	File.open(item24_file, "w+") do |f|
-		f.write(params['drt-file'][:tempfile].read)
+	if params.has_key?('drt-file') and params.has_key?('item24-file') 
+		drt_file = "user_uploads/" + params['drt-file'][:filename].to_s
+		File.open(drt_file, "w+") do |f|
+			f.write(params['drt-file'][:tempfile].read)
+		end
+
+		item24_file = 'user_uploads/' + params['item24-file'][:filename].to_s
+		File.open(item24_file, "w+") do |f|
+			f.write(params['item24-file'][:tempfile].read)
+		end
+		
+		# USAC .csv files have a "byte order mark" gremlin, so need odd encoding
+		frs_csv_text = File.read(drt_file, encoding: "bom|utf-8")
+		frs_csv = CSV.parse(frs_csv_text, :headers => true)
+		connections_csv_text = File.read(item24_file, encoding: "bom|utf-8")
+		connections_csv = CSV.parse(connections_csv_text, :headers => true)
+
+		drt_upload = Upload.create(:file_name => drt_file, :file_type => "DRT", :import_status => "In Process", :file_record_count => frs_csv.length, :successful_records => 0, :import_errors => [])
+		item24_upload = Upload.create(:file_name => item24_file, :file_type => "Item24", :import_status => "In Process", :file_record_count => connections_csv.length, :successful_records => 0, :import_errors => [])
+		
+		child_pid = fork do	
+			FundingRequest.delete_all
+			frs_csv.each_with_index do |row, i|
+				renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
+	
+				begin
+					dummy_funding_request = FundingRequest.new(renamed_keys_row)
+					renamed_keys_row.each_key do |key|			# eliminate dollar signs and commas for numerical fields
+						if ["BigDecimal","Fixnum"].include?(eval("dummy_funding_request.#{ key }.class").to_s)
+							renamed_keys_row[key].gsub!(/[$,]/, '') 	
+						end	
+					end
+					FundingRequest.create(renamed_keys_row)
+					drt_upload.successful_records += 1
+				rescue => any_error
+					drt_upload.import_errors << any_error.message
+				end
+				
+				#write status to database every 500 rows
+				if (i+1).modulo(500).zero?
+					drt_upload.save
+				end
+			end
+			File.delete(drt_file)		#since Heroku file storage is ephemeral anyway, might as well delete
+			drt_upload.import_status = "Complete"
+			drt_upload.save
+	
+			Connection.delete_all	
+			connections_csv.each_with_index do |row, i|
+				renamed_keys_row = Hash[ row.map { |key, value| [ConnectionsMapping[key] || key, value] } ]
+
+				begin
+					dummy_connection = Connection.new(renamed_keys_row)
+					renamed_keys_row.each_key do |key|			# eliminate dollar signs and commas for numerical fields
+						if ["BigDecimal","Fixnum"].include?(eval("dummy_connection.#{ key }.class").to_s)
+							renamed_keys_row[key] = renamed_keys_row[key].gsub(/[$,]/, '') 	
+						end	
+					end
+					Connection.create(renamed_keys_row)
+					item24_upload.successful_records += 1
+				rescue => any_error
+					item24_upload.import_errors << any_error.message
+				end
+				
+				#write status to database every 500 rows
+				if (i+1).modulo(500).zero?
+					item24_upload.save
+				end
+			end
+			File.delete(item24_file)		#since Heroku file storage is ephemeral anyway, might as well delete
+			item24_upload.import_status = "Complete"
+			item24_upload.save
+
+			exit
+		end
+		Process.detach(child_pid)
+		
+		redirect "/data_upload/upload_log", :success => "Success! Data import has started. You can reload this log page to monitor progress."
+	else
+		flash.now[:error] = "You must upload both a drt file and the associated item 24 file together."
+		erb :"/data_upload/new_upload"
 	end
 end
 
 get "/data_upload/upload_log" do
   @title = "Upload Log"
+  @drt_upload = Upload.where(:file_type => "DRT").last
+  @item24_upload = Upload.where(:file_type => "Item24").last
   erb :"/data_upload/upload_log"
-end
-
-get "/bulkupload-doit" do
-	@upload_errors = []
-	
-  	FundingRequest.delete_all
-  	# USAC .csv files have a "byte order mark" gremlin, so need odd encoding
-  	frs_csv_text = File.read(File.join(settings.root, 'user_uploads', 'funding_requests.csv'), encoding: "bom|utf-8")
-	frs_csv = CSV.parse(frs_csv_text, :headers => true)
-
-  	frs_csv.each do |row|
- 		renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
- 		
- 		begin
- 			dummy_funding_request = FundingRequest.new(renamed_keys_row)
- 			renamed_keys_row.each_key do |key|			# eliminate dollar signs and commas for numerical fields
- 		  		if ["BigDecimal","Fixnum"].include?(eval("dummy_funding_request.#{ key }.class").to_s)
- 		  			renamed_keys_row[key].gsub!(/[$,]/, '') 	
- 		  		end	
-			end
- 			FundingRequest.create(renamed_keys_row)
- 		rescue => any_error
- 			@upload_errors << "DRT Data Upload: " + any_error.message
- 		end
-	end
- 	
- 	Connections.delete_all
- 	# USAC .csv files have a "byte order mark" gremlin, so need odd encoding
-  	connections_csv_text = File.read(File.join(settings.root, 'user_uploads', 'connections.csv'), encoding: "bom|utf-8")
-	connections_csv = CSV.parse(connections_csv_text, :headers => true)
-	
-  	connections_csv.each do |row|
-  		renamed_keys_row = Hash[ row.map { |key, value| [ConnectionsMapping[key] || key, value] } ]
-
-  		begin
-  			dummy_connection = Connections.new(renamed_keys_row)
- 			renamed_keys_row.each_key do |key|			# eliminate dollar signs and commas for numerical fields
-		  		if ["BigDecimal","Fixnum"].include?(eval("dummy_connection.#{ key }.class").to_s)
-		  			renamed_keys_row[key] = renamed_keys_row[key].gsub(/[$,]/, '') 	
-		  		end	
-			end
- 			Connections.create(renamed_keys_row)
-  		rescue => any_error
- 			@upload_errors << "Connections Data Upload: " + any_error.message
- 		end
- 	end
- 	
-   	@successful_frn_uploads = 0
-  	@successful_connections_uploads = 0
-  			
-	erb :"/data_upload/upload_log"
 end
 
 helpers do
@@ -121,6 +153,15 @@ helpers do
       "Test E-rate Dashboard: #{@title}"
     else
       "Test E-rate Dashboard"
+    end
+  end
+  
+  def flash_class(level)
+    case level
+        when :notice then "alert alert-info alert-dismissable"
+        when :success then "alert alert-success alert-dismissable"
+        when :alert then "alert alert-warning alert-dismissable"
+    	when :error then "alert alert-danger alert-dismissable"
     end
   end
 end

@@ -1,4 +1,39 @@
 <h1>Upload Log</h1>
 
-<p>Coming Soon . . .</p>
+<div class="page-header">
+<h3>Most Recent DRT Upload</h3>
+</div>
 
+<p>
+<strong>File Name:</strong> <%= @drt_upload.file_name %><br>
+<strong>Import Started:</strong> <%= @drt_upload.created_at %><br>
+<strong>Status:</strong> <%= @drt_upload.import_status %><br>
+<strong>Records in Import File:</strong> <%= number_with_delimiter(@drt_upload.file_record_count) %><br>
+<strong>Records Successfully Imported:</strong> <%= number_with_delimiter(@drt_upload.successful_records) %><br>
+<strong>Errors:</strong> <%= number_with_delimiter(@drt_upload.import_errors.length) %> 
+<% if @drt_upload.import_errors.length > 0 %>(<% if @drt_upload.import_errors.length > 3 %>first 3<% end %>
+shown below)<% end %><br>
+
+<% @drt_upload.import_errors.take(3).each do |import_error| %>
+	<div class="well well-sm"><%= import_error %></div>
+<% end %>
+</p>
+
+<div class="page-header">
+<h3>Most Recent Item 24 Upload</h3>
+</div>
+
+<p>
+<strong>File Name:</strong> <%= @item24_upload.file_name %><br>
+<strong>Import Started:</strong> <%= @item24_upload.created_at %><br>
+<strong>Status:</strong> <%= @item24_upload.import_status %><br>
+<strong>Records in Import File:</strong> <%= number_with_delimiter(@item24_upload.file_record_count) %><br>
+<strong>Records Successfully Imported:</strong> <%= number_with_delimiter(@item24_upload.successful_records) %><br>
+<strong>Errors:</strong> <%= number_with_delimiter(@item24_upload.import_errors.length) %> 
+<% if @item24_upload.import_errors.length > 0 %>(<% if @item24_upload.import_errors.length > 3 %>first 3<% end %>
+shown below)<% end %><br>
+
+<% @item24_upload.import_errors.take(3).each do |import_error| %>
+	<div class="well well-sm"><%= import_error %></div>
+<% end %>
+</p>

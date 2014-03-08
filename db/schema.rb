@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140225021203) do
+ActiveRecord::Schema.define(version: 20140307020253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,5 +93,16 @@ ActiveRecord::Schema.define(version: 20140225021203) do
   end
 
   add_index "funding_requests", ["frn"], name: "index_funding_requests_on_frn", unique: true, using: :btree
+
+  create_table "uploads", force: true do |t|
+    t.text     "file_name"
+    t.text     "file_type"
+    t.text     "import_status"
+    t.integer  "file_record_count"
+    t.integer  "successful_records"
+    t.text     "import_errors"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

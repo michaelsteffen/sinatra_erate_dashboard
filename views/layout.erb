@@ -6,8 +6,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title><%= title %></title>
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="all">
     <link href="/custom_css.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
   </head>
   
   <body>
@@ -44,6 +45,10 @@
     </div>
 
     <div class="container">
+      <% flash.each do |key, value| %>
+        <div class="<%= flash_class(key) %>"><%= value %></div>
+  	  <% end %>
+  	              
       <%= yield %>
     </div><!-- /.container -->
 
@@ -51,7 +56,6 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+     <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
