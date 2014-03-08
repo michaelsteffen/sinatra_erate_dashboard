@@ -1,9 +1,10 @@
 # todo:
 # - make front page values live
+# - VER 1.0 COMPLETE!!
 # - add totals to tables
 # - do initial error checking of upload file headers
 # - add activerecord multiple insert to speed up data uploads
-# - add processing file warning
+# - possibly add processing file warning
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models
 # - refactor: move to database.yml for configuration
