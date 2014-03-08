@@ -74,9 +74,9 @@ post "/data_upload/new_upload" do
 		connections_csv = CSV.parse(connections_csv_text, :headers => true)
 
 		drt_upload = Upload.create(:file_name => drt_file, :file_type => "DRT", :import_status => "In Process", :file_record_count => frs_csv.length, :successful_records => 0, :import_errors => [])
-		item24_upload = Upload.create(:file_name => item24_file, :file_type => "Item24", :import_status => "In Process", :file_record_count => connections_csv.length, :successful_records => 0, :import_errors => [])
+		item24_upload = Upload.create(:file_name => item24_file, :file_type => "Item24", :import_status => "Queued", :file_record_count => connections_csv.length, :successful_records => 0, :import_errors => [])
 		
-		child_pid = fork do	
+		child_thread = Thread.new do	
 			FundingRequest.delete_all
 			frs_csv.each_with_index do |row, i|
 				renamed_keys_row = Hash[ row.map { |key, value| [FundingRequestsMapping[key] || key, value] } ]
@@ -103,6 +103,8 @@ post "/data_upload/new_upload" do
 			drt_upload.import_status = "Complete"
 			drt_upload.save
 	
+			item24_upload.import_status = "In Process"
+			item24_upload.save
 			Connection.delete_all	
 			connections_csv.each_with_index do |row, i|
 				renamed_keys_row = Hash[ row.map { |key, value| [ConnectionsMapping[key] || key, value] } ]
@@ -128,14 +130,11 @@ post "/data_upload/new_upload" do
 			File.delete(item24_file)		#since Heroku file storage is ephemeral anyway, might as well delete
 			item24_upload.import_status = "Complete"
 			item24_upload.save
-
-			exit
 		end
-		Process.detach(child_pid)
 		
-		redirect "/data_upload/upload_log", :success => "Success! Data import has started. You can reload this log page to monitor progress."
+		redirect "/data_upload/upload_log", :success => "<strong>Success!</strong> Data import has started. You can reload this log page to monitor progress.  Be forewarned that other pages will crash or perform unpredictably until the import is complete."
 	else
-		flash.now[:error] = "Ack! You must upload both a drt file and the associated item 24 file together."
+		flash.now[:error] = "<strong>Ack!</strong> You must upload both a drt file and the associated item 24 file together."
 		erb :"/data_upload/new_upload"
 	end
 end
