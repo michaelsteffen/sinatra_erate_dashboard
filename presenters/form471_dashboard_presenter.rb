@@ -1,34 +1,38 @@
-class BasicDashboardPresenter
+class Form471DashboardPresenter
   @@queries = {}
   attr_reader :num_applications, :application_count_by_type, :num_applicants, :applicant_count_by_apptype 
   attr_reader :requested_funding, :requests_by_apptype, :requests_by_discount, :prediscount_costs, :avg_discount
 
-  def initialize
+  def initialize(init_type = :full)
 	self.initialize_query_strings
 
-  	@num_applications = FundingRequest.connection.select_all(@@queries[:count_apps_query])[0]["count"]
-  	@application_count_by_type = FundingRequest.connection.select_all(@@queries[:apps_by_type_query])
-  	@num_applicants = FundingRequest.connection.select_all(@@queries[:count_applicants_query])[0]["count"]
-  	@applicant_count_by_apptype = FundingRequest.connection.select_all(@@queries[:applicants_by_apptype_query])
-  	
-  	@requested_funding = {}
-  	@requested_funding["all"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["total_request"]
-  	@requested_funding["p1"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["p1_request"]
-  	@requested_funding["p2"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["p2_request"]
-  	
-  	@requests_by_apptype = FundingRequest.connection.select_all(@@queries[:requests_by_apptype_query])
-  	@requests_by_discount = FundingRequest.connection.select_all(@@queries[:requests_by_discount_query])
-  	
-  	@prediscount_costs = {}
-  	@prediscount_costs["all"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["total_costs"]
-   	@prediscount_costs["p1"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["p1_costs"]
-   	@prediscount_costs["p2"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["p2_costs"]	
-   	
-   	@avg_discount = {}
-   	@avg_discount["all"] = @requested_funding["all"].to_f / @prediscount_costs["all"].to_f
-   	@avg_discount["p1"] = @requested_funding["p1"].to_f / @prediscount_costs["p1"].to_f
-   	@avg_discount["p2"] = @requested_funding["p2"].to_f / @prediscount_costs["p2"].to_f	
-
+	if init_type == :zero
+	elsif init_type == :small 
+		@num_applicants = FundingRequest.connection.select_all(@@queries[:count_applicants_query])[0]["count"]
+	else
+		@num_applications = FundingRequest.connection.select_all(@@queries[:count_apps_query])[0]["count"]
+		@application_count_by_type = FundingRequest.connection.select_all(@@queries[:apps_by_type_query])
+		@num_applicants = FundingRequest.connection.select_all(@@queries[:count_applicants_query])[0]["count"]
+		@applicant_count_by_apptype = FundingRequest.connection.select_all(@@queries[:applicants_by_apptype_query])
+	
+		@requested_funding = {}
+		@requested_funding["all"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["total_request"]
+		@requested_funding["p1"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["p1_request"]
+		@requested_funding["p2"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["p2_request"]
+	
+		@requests_by_apptype = FundingRequest.connection.select_all(@@queries[:requests_by_apptype_query])
+		@requests_by_discount = FundingRequest.connection.select_all(@@queries[:requests_by_discount_query])
+	
+		@prediscount_costs = {}
+		@prediscount_costs["all"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["total_costs"]
+		@prediscount_costs["p1"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["p1_costs"]
+		@prediscount_costs["p2"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["p2_costs"]	
+	
+		@avg_discount = {}
+		@avg_discount["all"] = @requested_funding["all"].to_f / @prediscount_costs["all"].to_f
+		@avg_discount["p1"] = @requested_funding["p1"].to_f / @prediscount_costs["p1"].to_f
+		@avg_discount["p2"] = @requested_funding["p2"].to_f / @prediscount_costs["p2"].to_f	
+	end
   end
   
   def initialize_query_strings

@@ -6,7 +6,7 @@
 
 <p>
 <strong>File Name:</strong> <%= @drt_upload.file_name %><br>
-<strong>Import Started:</strong> <%= @drt_upload.created_at.getlocal("-05:00")  %><br>
+<strong>File Uploaded:</strong> <%= @drt_upload.created_at.getlocal("-05:00")  %><br>
 <strong>Status:</strong> <%= @drt_upload.import_status %><br>
 <strong>Records in Import File:</strong> <%= number_with_delimiter(@drt_upload.file_record_count) %><br>
 <strong>Records Successfully Imported:</strong> <%= number_with_delimiter(@drt_upload.successful_records) %><br>
@@ -25,7 +25,7 @@ shown below)<% end %><br>
 
 <p>
 <strong>File Name:</strong> <%= @item24_upload.file_name %><br>
-<strong>Import Started:</strong> <%= @item24_upload.created_at.getlocal("-05:00") %><br>
+<strong>File Uploaded:</strong> <%= @item24_upload.created_at.getlocal("-05:00") %><br>
 <strong>Status:</strong> <%= @item24_upload.import_status %><br>
 <strong>Records in Import File:</strong> <%= number_with_delimiter(@item24_upload.file_record_count) %><br>
 <strong>Records Successfully Imported:</strong> <%= number_with_delimiter(@item24_upload.successful_records) %><br>

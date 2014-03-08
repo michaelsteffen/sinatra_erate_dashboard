@@ -4,25 +4,13 @@ class Item24DashboardPresenter
   attr_reader :requests_by_speed, :multiple_speed, :speed_tier_names, :multiple_speeds
   attr_reader :conn_types, :single_ctype_stats
   
-  def initialize
+  def initialize(init_type = :full)
 	self.initialize_query_strings
 
-  	@item24_requests = FundingRequest.connection.select_all(@@queries[:item24_requests_query])[0]["sum"]
-  	@percent_of_p1 = @item24_requests.to_f / FundingRequest.connection.select_all(@@queries[:total_p1requests_query])[0]["sum"].to_f
-   	
-   	@requests_by_type = FundingRequest.connection.select_all(@@queries[:requests_by_type_query])
-   	@multiple_types = FundingRequest.connection.select_all(@@queries[:multiple_types_query])[0]["sum"]
-
-   	@requests_by_speed = FundingRequest.connection.select_all(@@queries[:requests_by_speed_query])
-    @multiple_speeds = FundingRequest.connection.select_all(@@queries[:multiple_speed_query])[0]["sum"]
-
-	@speed_tier_names = { '1' => '< 1.5 Mbps', '2' => '1.5 - 9 Mbps', '3' => '10 - 99 Mbps', 
-						  '4' => '100 - 999 Mbps', '5' => '1 - 9.9 Gbps', '6' => '10+ Gbps'} 
-
-	single_ctype_frns = FundingRequest.connection.select_all(@@queries[:single_ctype_frns_query])	
-	@conn_types = ['100 Mbps fiber', '1 Gbps fiber', '10 Gbps fiber', 'T1/DS1 (1.5 Mbps)', 'T3/DS3 (45 Mbps)']
-	@single_ctype_stats = {}
-	conn_types.each do |conn_type|
+	if init_type == :zero
+	elsif init_type == :small
+		single_ctype_frns = FundingRequest.connection.select_all(@@queries[:single_ctype_frns_query])	
+		conn_type = '1 Gbps fiber'
 		frns = single_ctype_frns.select { |frn| frn['speed_type_category'] == conn_type}
 		conn_prices = []
 		conn_lines = 0
@@ -31,11 +19,40 @@ class Item24DashboardPresenter
 			conn_prices << frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d
 			conn_lines += frn['number_of_lines'].to_i
 		end
+		@single_ctype_stats = {}
 		@single_ctype_stats[conn_type] = {}
-		@single_ctype_stats[conn_type]['price_p25'] = percentile(conn_prices, 25)
 		@single_ctype_stats[conn_type]['price_median'] = percentile(conn_prices, 50)
-		@single_ctype_stats[conn_type]['price_p75'] = percentile(conn_prices, 75)
-		@single_ctype_stats[conn_type]['lines'] = conn_lines
+	else 
+		@item24_requests = FundingRequest.connection.select_all(@@queries[:item24_requests_query])[0]["sum"]
+		@percent_of_p1 = @item24_requests.to_f / FundingRequest.connection.select_all(@@queries[:total_p1requests_query])[0]["sum"].to_f
+	
+		@requests_by_type = FundingRequest.connection.select_all(@@queries[:requests_by_type_query])
+		@multiple_types = FundingRequest.connection.select_all(@@queries[:multiple_types_query])[0]["sum"]
+
+		@requests_by_speed = FundingRequest.connection.select_all(@@queries[:requests_by_speed_query])
+		@multiple_speeds = FundingRequest.connection.select_all(@@queries[:multiple_speed_query])[0]["sum"]
+
+		@speed_tier_names = { '1' => '< 1.5 Mbps', '2' => '1.5 - 9 Mbps', '3' => '10 - 99 Mbps', 
+							  '4' => '100 - 999 Mbps', '5' => '1 - 9.9 Gbps', '6' => '10+ Gbps'} 
+
+		single_ctype_frns = FundingRequest.connection.select_all(@@queries[:single_ctype_frns_query])	
+		@conn_types = ['100 Mbps fiber', '1 Gbps fiber', '10 Gbps fiber', 'T1/DS1 (1.5 Mbps)', 'T3/DS3 (45 Mbps)']
+		@single_ctype_stats = {}
+		conn_types.each do |conn_type|
+			frns = single_ctype_frns.select { |frn| frn['speed_type_category'] == conn_type}
+			conn_prices = []
+			conn_lines = 0
+			frns.each do |frn|
+				#conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} )
+				conn_prices << frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d
+				conn_lines += frn['number_of_lines'].to_i
+			end
+			@single_ctype_stats[conn_type] = {}
+			@single_ctype_stats[conn_type]['price_p25'] = percentile(conn_prices, 25)
+			@single_ctype_stats[conn_type]['price_median'] = percentile(conn_prices, 50)
+			@single_ctype_stats[conn_type]['price_p75'] = percentile(conn_prices, 75)
+			@single_ctype_stats[conn_type]['lines'] = conn_lines
+		end
 	end
 
   end
