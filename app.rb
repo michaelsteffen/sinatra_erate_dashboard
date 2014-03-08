@@ -2,13 +2,13 @@
 # - add totals to tables
 # - do initial error checking of upload file headers
 # - add activerecord multiple insert to speed up data uploads
-# - add processing file warning to dashboards to fail more elegantly
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models?
 # - refactor: add css class for table styling for hidden row
 # - refactor: turn large front page text into css classes
 # - add test suite
 # - refactor: add loop for upload types to upload log page
+# - refactor: more efficient query for "unless" calls to test if import is ongoing
 # - eliminate use of <br> for spacing
 # - move to database.yml for configuration?
 
@@ -28,19 +28,25 @@ include ActionView::Helpers::NumberHelper
 enable :sessions
 
 get "/" do
-  @title = "Welcome"
-  @form471_small = Form471DashboardPresenter.new(:small)
-  @item24_small = Item24DashboardPresenter.new(:small)
-  erb :"index"
+    redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
+  	
+  	@title = "Welcome"
+  	@form471_small = Form471DashboardPresenter.new(:small)
+  	@item24_small = Item24DashboardPresenter.new(:small)
+  	erb :"index"
 end
 
 get "/dashboards/form471" do
+  redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
+
   @title = "Form 471 Dashboard"
   @form471_dashboard = Form471DashboardPresenter.new
   erb :"/dashboards/form471"
 end
 
 get "/dashboards/item24" do
+  redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
+
   @title = "Item 24 Dashboard"
   @item24_dashboard = Item24DashboardPresenter.new
   erb :"/dashboards/item24"
@@ -134,7 +140,7 @@ post "/data_upload/new_upload" do
 			item24_upload.save
 		end
 		
-		redirect "/data_upload/upload_log", :success => "<strong>Success!</strong> Your data import has started. You can reload this page to monitor progress.  Be forewarned that other pages will crash or perform unpredictably until the import is complete."
+		redirect "/data_upload/upload_log", :success => "<strong>Success!</strong> Your data import has started. You can reload this page to monitor progress.  Dashboards will be unavailable until the import completes."
 	else
 		flash.now[:error] = "<strong>Ack!</strong> You must upload both a drt file and the associated item 24 file together."
 		erb :"/data_upload/new_upload"
@@ -146,6 +152,11 @@ get "/data_upload/upload_log" do
   @drt_upload = Upload.where(:file_type => "DRT").last
   @item24_upload = Upload.where(:file_type => "Item24").last
   erb :"/data_upload/upload_log"
+end
+
+get "/working" do
+  @title = "Upload in progress . . ."
+  erb :"working"
 end
 
 helpers do
