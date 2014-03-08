@@ -58,15 +58,15 @@ post "/data_upload/new_upload" do
 
 	if params.has_key?('drt-file') and params.has_key?('item24-file') 
 		drt_file = "user_uploads/" + params['drt-file'][:filename].to_s
-		f = File.new(drt_file, "w") 
-		f.write(params['drt-file'][:tempfile].read)
-		f.close
+		File.open(drt_file, "w+") do |f|
+			f.write(params['drt-file'][:tempfile].read)
+		end
 
 		item24_file = "user_uploads/" + params['item24-file'][:filename].to_s
-		f = File.new(item24_file, "w")
-		f.write(params['item24-file'][:tempfile].read)
-		f.close
-
+		File.open(item24_file, "w+") do |f|
+			f.write(params['item24-file'][:tempfile].read)
+		end
+		
 		# USAC .csv files have a "byte order mark" gremlin, so need odd encoding
 		frs_csv_text = File.read(drt_file, encoding: "bom|utf-8")
 		frs_csv = CSV.parse(frs_csv_text, :headers => true)
