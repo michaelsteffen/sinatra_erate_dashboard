@@ -14,7 +14,8 @@
 <% @form471_dashboard.application_count_by_type.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
-    <td><%= number_with_delimiter(app_type["count"]) %></td>
+    <td><%= '<a href="/applications/by_type/' + app_type["application_type"] + '/1">' %>
+        <%= number_with_delimiter(app_type["count"]) %></a></td>
   </tr>
 <% end %>
 </table>

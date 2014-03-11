@@ -1,4 +1,5 @@
 # todo:
+# - add line counts to first two items in item 24 tables
 # - add totals to tables
 # - better error handling for uplaod files
 #		- check that files are actually CSV files
@@ -13,6 +14,7 @@
 # - refactor: add loop for upload types to upload log page
 # - refactor: more efficient query for "unless" calls to test if import is ongoing
 # - eliminate use of <br> for spacing
+# - normalize data structure?
 # - move to database.yml for configuration?
 
 require 'sinatra'
@@ -58,6 +60,13 @@ end
 get "/dashboards/jump_the_line" do
   @title = "Jump the Line Dashboard"
   erb :"/dashboards/jump_the_line"
+end
+
+get "/applications/by_type/:type/:page" do
+  @title = "Applications"
+  @app_presenter = ApplicationPresenter.new(params)
+  @type = params[:type]
+  erb :"/applications/by_type"
 end
 
 get "/data_upload/new_upload" do
