@@ -1,54 +1,20 @@
 <h1><%= @type %> Applications</h1>
 <br>
-<div style="margin-top: 18px; margin-bottom: 18px;">
-		<div style="display:inline-block; vertical-align:middle;">
-			<span style="line-height: 1; margin-right: 5px; margin-top: 0px; margin-bottom:0px"><strong>Page:</strong></span>
-		</div>
-		
-		<div style="display: inline-block; vertical-align: middle;">
-			<ul class="pagination pagination-sm" style="margin-top: 4px; margin-bottom: 0px">
-			  <li class="disabled"><a href="#">&lsaquo;</a></li>
-			  <li class="active"><span>1</span></li>
-			  <li><a href="#">2</a></li>
-			  <li><a href="#">3</a></li>
-			  <li><a href="#">4</a></li>
-			  <li><a href="#">5</a></li>
-			  <li><a href="#">&rsaquo;</a></li>
-			</ul>
-		</div>
 
-		<div style="display:inline-block; vertical-align:middle;">
-			<span style="line-height: 1; margin-left: 40px; margin-right: 5px; margin-top: 0px; margin-bottom:0px"><strong>Sort by:</strong></span>
-		</div>
-	
-		<div class="btn-group">
-			<div class="dropdown">
-			  <button type="button" class="btn btn-sm btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
-				Requested Support &nbsp;&nbsp;<span class="caret"></span>
-			  </button>
-			  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Application Number</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">BEN</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Name</a></li>
-			  </ul>
-			</div>
-		</div>
-</div>
+<%= erb :index_nav_partial, :locals => {:page => 1, :num_pages => 5, :sort => "Requested Support", :sort_options => ["Application Number", "BEN", "Applicant Name", "Requested Support"], :page_len => "1000", :page_len_options => ["100", "500", "1000", "5000", "Show All"]} %>
 
 <table class="table table-hover table-condensed">
   <thead><tr>
     <th>App No</th>
-    <th>App Type</th>
     <th>BEN</th>
     <th>Applicant Name</th>
-    <th>Applicant State</th>
+    <th>State</th>
     <th>Requested Support</th>
   </tr></thead>
 <% @app_presenter.applications.each do |app| %>
   <tr>
     <td><%= '<a href="' + app.USAC_f471_URL + '">' %>
       <%= app.f471_application_number %></a></td>
-    <td><%= app.application_type %></td>
     <td><%= app.ben %></td>
     <td><%= app.applicant_name %></td>
     <td><%= app.applicant_state %></td>

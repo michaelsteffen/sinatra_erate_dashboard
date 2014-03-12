@@ -1,0 +1,56 @@
+<div class="index-nav">
+	<div class="index-nav-element">
+		<span class="index-nav-label index-nav-left-label"><strong>Page</strong></span>
+	</div>
+	
+	<div class="index-nav-element">
+		<ul class="pagination pagination-sm pagination-index-nav">
+		  <%if page == 1 %>
+			<%= '<li class="disabled"><a href="#">&lsaquo;</a></li>' %>
+		  <% else %>
+			<%= '<li><a href="#">&lsaquo;</a></li>' %>
+		  <% end %>
+		  <li class="active"><span>1</span></li>
+		  <li><a href="#">2</a></li>
+		  <li><a href="#">3</a></li>
+		  <li><a href="#">4</a></li>
+		  <li><a href="#">5</a></li>
+		  <li><a href="#">&rsaquo;</a></li>
+		</ul>
+	</div>
+
+	<div class="index-nav-element">
+		<span class="index-nav-label"><strong>Sort by</strong></span>
+	</div>
+
+	<div class="index-nav-element">
+		<div class="dropdown">
+		  <button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavDropdownMenu1" data-toggle="dropdown">
+			<%= sort %> &nbsp;&nbsp;<span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="indexNavDropdownMenu1">
+			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">Application Number</a></li>
+			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">BEN</a></li>
+			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">Applicant Name</a></li>
+		  </ul>
+		</div>
+	</div>
+	
+	<div class="index-nav-element">
+		<span class="index-nav-label"><strong>Results Per Page</strong></span>
+	</div>
+
+	<div class="index-nav-element">
+		<div class="dropdown">
+		  <button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavDropdownMenu2" data-toggle="dropdown">
+			<%= page_len %> &nbsp;&nbsp;<span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="indexNavDropdownMenu2">
+			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">100</a></li>
+			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">500</a></li>
+			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">5000</a></li>
+			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">Show All</a></li>
+		  </ul>
+		</div>
+	</div>
+</div>

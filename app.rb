@@ -62,10 +62,12 @@ get "/dashboards/jump_the_line" do
   erb :"/dashboards/jump_the_line"
 end
 
-get "/applications/by_type/:type/:page" do
+get "/applications/by_type/:type/:sort/:page" do
   @title = "Applications"
-  @app_presenter = ApplicationPresenter.new(params)
+  @app_presenter = ApplicationPresenter.new(params[:type], params[:sort], params[:page])
   @type = params[:type]
+  @sort = params[:type]
+  @page = params[:type]
   erb :"/applications/by_type"
 end
 
