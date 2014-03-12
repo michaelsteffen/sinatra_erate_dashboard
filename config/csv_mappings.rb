@@ -52,11 +52,11 @@ FundingRequestsMapping = {
 	"Total_Authorized_Disbursement" => :total_authorized_disbursement,
 	"Wave_Number" => :wave_number,
  	"Appeal_Wave_Number" => :appeal_wave_number,
-	"Applicant_Street_Address21" => :does_not_provide_broadband,
-	"WIFI_CONN_PERCENTAGE1" => :pct_classrooms_with_wireless_access,
- 	"WIRED_CONN_PERCENTAGE1" => :pct_classrooms_with_wired_access,
-	"LAST_MILE_IND1" => :last_mile_connections,
- 	"BACKBONE_CONN_IND1" => :backbone_only
+	"NON_BROADBAND_CONN_IND" => :does_not_provide_broadband,
+	"WIFI_CONN_PERCENTAGE" => :pct_classrooms_with_wireless_access,
+ 	"WIRED_CONN_PERCENTAGE" => :pct_classrooms_with_wired_access,
+	"LAST_MILE_IND" => :last_mile_connections,
+ 	"BACKBONE_CONN_IND" => :backbone_only
 }
 
 ConnectionsMapping = {
