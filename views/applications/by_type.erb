@@ -1,7 +1,21 @@
 <h1><%= @type %> Applications</h1>
 <br>
 
-<%= erb :index_nav_partial, :locals => {:page => 1, :num_pages => 5, :sort => "Requested Support", :sort_options => ["Application Number", "BEN", "Applicant Name", "Requested Support"], :page_len => "1000", :page_len_options => ["100", "500", "1000", "5000", "Show All"]} %>
+<%= erb :index_nav_partial, :locals => {
+	:page => @page, 
+	:num_pages => (@app_presenter.application_count/@page_size + 1).to_i, 
+	:base_url => "/applications/by_type/#{@type}/#{@sort}/#{@page_size}/",
+	:sort => "Requested Support", 
+	:sort_options => [ {:label => "Application Number", :link => "#"},
+					   {:label => "BEN", :link => "#"},
+					   {:label => "Applicant Name", :link => "#"},
+					   {:label => "Requested Support", :link => "#"} ], 
+	:page_len => "1000", 
+	:page_len_options => [ {:label => "100", :link => "#"},
+						   {:label => "500", :link => "#"},
+						   {:label => "1000", :link => "#"},
+						   {:label => "5000", :link => "#"},
+						   {:label => "Show All", :link => "#"} ] } %>
 
 <table class="table table-hover table-condensed">
   <thead><tr>

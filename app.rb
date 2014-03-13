@@ -1,11 +1,17 @@
-# todo:
+# to do:
+# - make pager max out pages at 10 (with a ... button that leads to 11)
+# - add drill downs to individual applications, BENs, etc.
+# - change dashboard order per Mike B suggestions
+# - change "jump-the-line" presentation per Mark W suggestion
 # - add line counts to first two items in item 24 tables
-# - add totals to tables
+# - add block 4 data
+# - add totals to demand table
 # - better error handling for uplaod files
 #		- check that files are actually CSV files
 # 		- do initial error checking of upload file headers
 #		- catch other errors??
 # - add activerecord multiple insert to speed up data uploads
+# - move to-do list to github tickets
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models?
 # - refactor: add css class for table styling for hidden row
@@ -62,12 +68,13 @@ get "/dashboards/jump_the_line" do
   erb :"/dashboards/jump_the_line"
 end
 
-get "/applications/by_type/:type/:sort/:page" do
+get "/applications/by_type/:type/?:sort?/?:page_size?/?:page?" do
   @title = "Applications"
-  @app_presenter = ApplicationPresenter.new(params[:type], params[:sort], params[:page])
-  @type = params[:type]
-  @sort = params[:type]
-  @page = params[:type]
+  @type = params[:type] || 'DISTRICT'
+  @sort = params[:sort] || :f471_application_number
+  @page_size = params[:page_size] ? (Integer(params[:page_size]) rescue 1000) : 1000
+  @page = params[:page] ? (Integer(params[:page]) rescue 1) : 1
+  @app_presenter = ApplicationPresenter.new(@type, @sort, @page)
   erb :"/applications/by_type"
 end
 

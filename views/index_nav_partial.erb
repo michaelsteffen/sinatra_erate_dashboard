@@ -5,17 +5,23 @@
 	
 	<div class="index-nav-element">
 		<ul class="pagination pagination-sm pagination-index-nav">
-		  <%if page == 1 %>
-			<%= '<li class="disabled"><a href="#">&lsaquo;</a></li>' %>
+		  <% if page == 1 %>
+			<li class="disabled"><span>&lsaquo;</span></li>
 		  <% else %>
-			<%= '<li><a href="#">&lsaquo;</a></li>' %>
+			<li><a href="<%= base_url + (page-1).to_s %>">&lsaquo;</a></li>		  
 		  <% end %>
-		  <li class="active"><span>1</span></li>
-		  <li><a href="#">2</a></li>
-		  <li><a href="#">3</a></li>
-		  <li><a href="#">4</a></li>
-		  <li><a href="#">5</a></li>
-		  <li><a href="#">&rsaquo;</a></li>
+		  <% (1..num_pages).each do |page_num| %>
+		  	<% if page_num == page %>
+		  	  <li class="active"><span><%= page_num %></span></li>
+		  	<% else %>
+		  	  <li><a href="<%= base_url + page_num.to_s %>"><%= page_num %></a></li>
+		  	<% end %>
+		  <% end %>
+		  <% if page == num_pages %>
+			<li class="disabled"><span>&rsaquo;</span></li>
+		  <% else %>
+			<li><a href="<%= base_url + (page+1).to_s %>">&rsaquo;</a></li>
+		  <% end %>
 		</ul>
 	</div>
 
