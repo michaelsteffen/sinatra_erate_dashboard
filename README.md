@@ -15,7 +15,7 @@ The simplest way to get a sense of the app is probably as follows:
 
 The master branch should reflect what is deployed on Heroku, and hopefully more or less works.  I'm also working on a feature branch that reflects the latest suggestions from Mark, Lisa, and Mike -- and which may or may not actually work at any given moment.
 
-Take a look at [this tutorial](http://ruby.railstutorial.org/) if you want help setting Ruby up on your mac.  The tutorial is for Rails, which is a cousin of Sinatra, so it isn't 100% applicable, but the basic Ruby set-up should be the same, and many of the concepts are applicable.  
+Take a look at [this tutorial](http://ruby.railstutorial.org/) if you want help setting Ruby up on your mac.  The tutorial is for Rails, another Ruby-based web app framework that is a cousin of Sinatra, so it isn't 100% applicable, but the basic Ruby set-up should be the same, and many of the concepts are applicable.  
 
 Enjoy!
 
