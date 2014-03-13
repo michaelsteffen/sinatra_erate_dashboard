@@ -61,6 +61,8 @@ get "/dashboards/jump_the_line" do
 end
 
 get "/data_upload/new_upload" do
+  redirect "/working_upload" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
+
   @title = "Data Upload"
   erb :"/data_upload/new_upload"
 end
