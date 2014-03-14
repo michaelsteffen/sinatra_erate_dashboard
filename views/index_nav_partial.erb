@@ -6,53 +6,55 @@
 	<% end %>
 
 	<div class="index-nav-element">
-		<span class="index-nav-label <%= "index-nav-left-label" unless page > 1 %>">Page <%= page %> of <%= num_pages %></span>
+		<span class="index-nav-label <%= "index-nav-left-label" unless page > 1 %>">Records <%= ((page-1)*page_len+1).to_s %>&ndash;<%= [((page)*page_len), num_records].min.to_s %> of <%= num_records %></span>
 	</div>
 
-	<div class="index-nav-element">
-		<span class="index-nav-label">Sort by:</span>
-	</div>
-
-	<div class="index-nav-element">
-		<div class="dropdown">
-			<button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavSortMenu" data-toggle="dropdown">
-				<%= sort %> &nbsp;&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu" aria-labelledby="indexNavSortMenu">
-			<% sort_options.each do |option| %>
-				<% unless option[:label] == sort %>
-					<li role="presentation" class="index-nav-dropdown-option">
-			    		<a role="menuitem" tabindex="-1" href="<%= option[:link] %>">
-			    		<%= option[:label] %></a>
-		      		</li>
-		    	<% end %>  
-		  	<% end %>
-		  	</ul>
+	<% if nav_type == "top" %>
+		<div class="index-nav-element">
+			<span class="index-nav-label">Sort by:</span>
 		</div>
-	</div>
-	
-	<div class="index-nav-element">
-		<span class="index-nav-label">Results Per Page:</span>
-	</div>
 
-	<div class="index-nav-element">
-		<div class="dropdown">
-			<button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavPageSizeMenu" data-toggle="dropdown">
-				<%= page_len %> &nbsp;&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu" aria-labelledby="indexNavPageSizeMenu">
-			<% page_len_options.each do |option| %>
-				<% unless option[:label] == page_len.to_s %>
-					<li role="presentation" class="index-nav-dropdown-option">
-						<a role="menuitem" tabindex="-1" href="<%= option[:link] %>">
-						<%= option[:label] %></a>
-					</li>
-				<% end %>  
-			<% end %>
-			</ul>
+		<div class="index-nav-element">
+			<div class="dropdown">
+				<button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavSortMenu" data-toggle="dropdown">
+					<%= sort %> &nbsp;&nbsp;<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="indexNavSortMenu">
+				<% sort_options.each do |option| %>
+					<% unless option[:label] == sort %>
+						<li role="presentation" class="index-nav-dropdown-option">
+							<a role="menuitem" tabindex="-1" href="<%= option[:link] %>">
+							<%= option[:label] %></a>
+						</li>
+					<% end %>  
+				<% end %>
+				</ul>
+			</div>
 		</div>
-	</div>
 	
+		<div class="index-nav-element">
+			<span class="index-nav-label">Results Per Page:</span>
+		</div>
+
+		<div class="index-nav-element">
+			<div class="dropdown">
+				<button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavPageSizeMenu" data-toggle="dropdown">
+					<%= page_len %> &nbsp;&nbsp;<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="indexNavPageSizeMenu">
+				<% page_len_options.each do |option| %>
+					<% unless option[:label] == page_len.to_s %>
+						<li role="presentation" class="index-nav-dropdown-option">
+							<a role="menuitem" tabindex="-1" href="<%= option[:link] %>">
+							<%= option[:label] %></a>
+						</li>
+					<% end %>  
+				<% end %>
+				</ul>
+			</div>
+		</div>
+	<% end %>
+
 	<% if num_pages > 1 && page != num_pages %>
 		<div class="index-nav-element right-pager">
 			<a href="<%= base_url + (page+1).to_s %>" class="btn btn-sm btn-default">Next &rarr;</a>
