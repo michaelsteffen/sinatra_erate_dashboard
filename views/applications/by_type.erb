@@ -1,21 +1,18 @@
-<h1><%= @type %> Applications</h1>
+<h1><%= @app_presenter.type %> Applications</h1>
 <br>
 
 <%= erb :index_nav_partial, :locals => {
-	:page => @page, 
-	:num_pages => (@app_presenter.application_count/@page_size + 1).to_i, 
-	:base_url => "/applications/by_type/#{@type}/#{@sort}/#{@page_size}/",
-	:sort => "Requested Support", 
-	:sort_options => [ {:label => "Application Number", :link => "#"},
-					   {:label => "BEN", :link => "#"},
-					   {:label => "Applicant Name", :link => "#"},
-					   {:label => "Requested Support", :link => "#"} ], 
-	:page_len => "1000", 
-	:page_len_options => [ {:label => "100", :link => "#"},
-						   {:label => "500", :link => "#"},
-						   {:label => "1000", :link => "#"},
-						   {:label => "5000", :link => "#"},
-						   {:label => "Show All", :link => "#"} ] } %>
+	:page => @app_presenter.page, 
+	:num_pages => (@app_presenter.application_count/@app_presenter.page_len + 1).to_i, 
+	:base_url => "/applications/by_type/#{@app_presenter.type}/#{@app_presenter.sort_code}/#{@app_presenter.page_len}/",
+	:sort => @app_presenter.sort_long_names[@app_presenter.sort_code], 
+	:sort_options => Array.new(@app_presenter.sort_long_names.keys.length){ |i|
+						{:label => @app_presenter.sort_long_names.values[i], 
+						 :link => "/applications/by_type/#{@app_presenter.type}/#{@app_presenter.sort_long_names.keys[i]}/#{@app_presenter.page_len}/1"} },
+	:page_len => @app_presenter.page_len, 
+	:page_len_options => Array.new(@app_presenter.page_len_options.length){ |i|
+							{:label => @app_presenter.page_len_options[i].to_s, 
+							 :link => "/applications/by_type/#{@app_presenter.type}/#{@app_presenter.sort_code}/#{@app_presenter.page_len_options[i].to_s}/#{(((@app_presenter.page-1)*@app_presenter.page_len/@app_presenter.page_len_options[i]).to_i+1).to_s}"} } } %>
 
 <table class="table table-hover table-condensed">
   <thead><tr>

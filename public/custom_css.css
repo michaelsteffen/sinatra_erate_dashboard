@@ -42,13 +42,16 @@ body {
 }
 
 .index-nav .index-nav-element {
-	display:inline-block; 
-	vertical-align:middle;
+	display: inline-block; 
+	vertical-align: middle;
 }
 
-.index-nav .pagination-index-nav {
-	margin-top: 4px; 
-	margin-bottom: 0px
+.index-nav .left-pager {
+}
+
+.index-nav .right-pager {
+	margin-left: 25px;
+	float: right
 }
 
 .index-nav .index-nav-label {
@@ -60,9 +63,10 @@ body {
 	margin-bottom:0px
 }
 
-.index-nav .index-nav-left-label {
-	margin-left: 0px;
+.index-nav .index-nav-left-label { 
+	margin-left: 0px; 
 }
+
 
 .index-nav .index-nav-dropdown-option {
 	font-size: 12px;  

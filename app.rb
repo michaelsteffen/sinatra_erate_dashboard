@@ -1,5 +1,4 @@
 # to do:
-# - make pager max out pages at 10 (with a ... button that leads to 11)
 # - add drill downs to individual applications, BENs, etc.
 # - change dashboard order per Mike B suggestions
 # - change "jump-the-line" presentation per Mark W suggestion
@@ -68,13 +67,9 @@ get "/dashboards/jump_the_line" do
   erb :"/dashboards/jump_the_line"
 end
 
-get "/applications/by_type/:type/?:sort?/?:page_size?/?:page?" do
+get "/applications/by_type/:type/?:sort?/?:page_len?/?:page?" do
   @title = "Applications"
-  @type = params[:type] || 'DISTRICT'
-  @sort = params[:sort] || :f471_application_number
-  @page_size = params[:page_size] ? (Integer(params[:page_size]) rescue 1000) : 1000
-  @page = params[:page] ? (Integer(params[:page]) rescue 1) : 1
-  @app_presenter = ApplicationPresenter.new(@type, @sort, @page)
+  @app_presenter = ApplicationPresenter.new(@params[:type], @params[:sort], @params[:page_len], @params[:page])
   erb :"/applications/by_type"
 end
 

@@ -1,62 +1,61 @@
 <div class="index-nav">
+	<% if page >1 %>	
+		<div class="index-nav-element left-pager">
+			<a href="<%= base_url + (page-1).to_s %>" class="btn btn-sm btn-default">&larr; Previous</a>
+		</div>
+	<% end %>
+
 	<div class="index-nav-element">
-		<span class="index-nav-label index-nav-left-label"><strong>Page</strong></span>
+		<span class="index-nav-label <%= "index-nav-left-label" unless page > 1 %>">Page <%= page %> of <%= num_pages %></span>
 	</div>
-	
+
 	<div class="index-nav-element">
-		<ul class="pagination pagination-sm pagination-index-nav">
-		  <% if page == 1 %>
-			<li class="disabled"><span>&lsaquo;</span></li>
-		  <% else %>
-			<li><a href="<%= base_url + (page-1).to_s %>">&lsaquo;</a></li>		  
-		  <% end %>
-		  <% (1..num_pages).each do |page_num| %>
-		  	<% if page_num == page %>
-		  	  <li class="active"><span><%= page_num %></span></li>
-		  	<% else %>
-		  	  <li><a href="<%= base_url + page_num.to_s %>"><%= page_num %></a></li>
+		<span class="index-nav-label">Sort by:</span>
+	</div>
+
+	<div class="index-nav-element">
+		<div class="dropdown">
+			<button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavSortMenu" data-toggle="dropdown">
+				<%= sort %> &nbsp;&nbsp;<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="indexNavSortMenu">
+			<% sort_options.each do |option| %>
+				<% unless option[:label] == sort %>
+					<li role="presentation" class="index-nav-dropdown-option">
+			    		<a role="menuitem" tabindex="-1" href="<%= option[:link] %>">
+			    		<%= option[:label] %></a>
+		      		</li>
+		    	<% end %>  
 		  	<% end %>
-		  <% end %>
-		  <% if page == num_pages %>
-			<li class="disabled"><span>&rsaquo;</span></li>
-		  <% else %>
-			<li><a href="<%= base_url + (page+1).to_s %>">&rsaquo;</a></li>
-		  <% end %>
-		</ul>
-	</div>
-
-	<div class="index-nav-element">
-		<span class="index-nav-label"><strong>Sort by</strong></span>
-	</div>
-
-	<div class="index-nav-element">
-		<div class="dropdown">
-		  <button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavDropdownMenu1" data-toggle="dropdown">
-			<%= sort %> &nbsp;&nbsp;<span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" role="menu" aria-labelledby="indexNavDropdownMenu1">
-			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">Application Number</a></li>
-			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">BEN</a></li>
-			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">Applicant Name</a></li>
-		  </ul>
+		  	</ul>
 		</div>
 	</div>
 	
 	<div class="index-nav-element">
-		<span class="index-nav-label"><strong>Results Per Page</strong></span>
+		<span class="index-nav-label">Results Per Page:</span>
 	</div>
 
 	<div class="index-nav-element">
 		<div class="dropdown">
-		  <button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavDropdownMenu2" data-toggle="dropdown">
-			<%= page_len %> &nbsp;&nbsp;<span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" role="menu" aria-labelledby="indexNavDropdownMenu2">
-			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">100</a></li>
-			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">500</a></li>
-			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">5000</a></li>
-			<li role="presentation" class="index-nav-dropdown-option"><a role="menuitem" tabindex="-1" href="#">Show All</a></li>
-		  </ul>
+			<button type="button" class="btn btn-sm btn-default dropdown-toggle" id="indexNavPageSizeMenu" data-toggle="dropdown">
+				<%= page_len %> &nbsp;&nbsp;<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="indexNavPageSizeMenu">
+			<% page_len_options.each do |option| %>
+				<% unless option[:label] == page_len.to_s %>
+					<li role="presentation" class="index-nav-dropdown-option">
+						<a role="menuitem" tabindex="-1" href="<%= option[:link] %>">
+						<%= option[:label] %></a>
+					</li>
+				<% end %>  
+			<% end %>
+			</ul>
 		</div>
 	</div>
+	
+	<% if num_pages > 1 && page != num_pages %>
+		<div class="index-nav-element right-pager">
+			<a href="<%= base_url + (page+1).to_s %>" class="btn btn-sm btn-default">Next &rarr;</a>
+		</div>
+	<% end %>
 </div>
