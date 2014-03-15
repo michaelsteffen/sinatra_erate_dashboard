@@ -1,6 +1,11 @@
 # to do:
-# - !! application dashboard and drill down counts don't match
 # - add drill downs to individual applications, BENs, etc.
+#		- add discount query to funding request presenter
+# 		- !! make FRN list title reflect query type
+#		- make app & bens link to FRN displays, FRNs to single FRN page with block 4 info, FRN page back to USAC app
+# 		- refactor: swith to query syntax for applications, BEN, frn lists
+#		- refactor: switch to passing hash (which will just be @params) to applications, BEN, frn list presenters
+# - add individual FRN, Application, BEN display
 # - change dashboard order per Mike B suggestions
 # - change "jump-the-line" presentation per Mark W suggestion
 # - add line counts to first two items in item 24 tables
@@ -12,6 +17,7 @@
 #		- catch other errors??
 # - add activerecord multiple insert to speed up data uploads
 # - move to-do list to github tickets
+# - refactor: rewrite applicant, application, and frn presenters to take a parameter hash
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models?
 # - refactor: add css class for table styling for hidden row
@@ -71,13 +77,37 @@ end
 get "/applications/by_type/:type/?:sort?/?:page_len?/?:page?" do
   @title = "Applications"
   @app_presenter = ApplicationPresenter.new(@params[:type], @params[:sort], @params[:page_len], @params[:page])
-  erb :"/applications/by_type"
+  erb :"/list_views/app_list"
 end
 
 get "/applicants/by_type/:type/?:sort?/?:page_len?/?:page?" do
   @title = "Applicants"
   @appl_presenter = ApplicantPresenter.new(@params[:type], @params[:sort], @params[:page_len], @params[:page])
-  erb :"/applicants/by_type"
+  erb :"/list_views/applicant_list"
+end
+
+get "/frns/by_type/:type/?:priority?/?:sort?/?:page_len?/?:page?" do
+  @title = "Funding Requests"
+  @frn_presenter = FundingRequestPresenter.new(@params[:type], nil, nil, nil, @params[:priority], @params[:sort], @params[:page_len], @params[:page])  
+  erb :"/list_views/frn_list"
+end
+
+get "/frns/by_discount/:discount/?:priority?" do
+  @title = "Funding Requests"
+  @frn_presenter = FundingRequestPresenter.new(nil, @params[:discount], nil, @params[:ben], @params[:priority], nil, nil, nil)  
+  erb :"/list_views/frn_list"
+end
+
+get "/frns/by_app/:appno" do
+  @title = "Funding Requests"
+  @frn_presenter = FundingRequestPresenter.new(nil, nil, @params[:appno], nil, nil, nil, nil, nil)  
+  erb :"/list_views/frn_list"
+end
+
+get "/frns/by_ben/:ben/?:priority?" do
+  @title = "Funding Requests"
+  @frn_presenter = FundingRequestPresenter.new(nil, nil, nil, @params[:ben], @params[:priority], nil, nil, nil)  
+  erb :"/list_views/frn_list"
 end
 
 get "/data_upload/new_upload" do

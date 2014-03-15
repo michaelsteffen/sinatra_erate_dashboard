@@ -29,8 +29,10 @@
     <td><%= appl.ben %></td>
     <td><%= appl.applicant_name %></td>
     <td><%= appl.applicant_state %></td>
-    <td>$ <%= number_with_delimiter(appl.p1_request.to_i) %></td>
-    <td>$ <%= number_with_delimiter(appl.p2_request.to_i) %></td>
+    <td>$ <%= '<a href="' + "/frns/by_ben/#{appl.ben}" + '/p1">' %>
+    	  <%= number_with_delimiter(appl.p1_request.to_i) %></a></td>
+    <td>$ <%= '<a href="' + "/frns/by_ben/#{appl.ben}" + '/p2">' %>
+    	  <%= number_with_delimiter(appl.p2_request.to_i) %></a></td>
   </tr>
 <% end %>
 </table>

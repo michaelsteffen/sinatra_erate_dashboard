@@ -54,9 +54,12 @@
 <% @form471_dashboard.requests_by_apptype.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
-    <td>$ <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></td>
-    <td>$ <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></td>
-    <td>$ <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></td>
+    <td>$ <%= '<a href="/frns/by_type/' + app_type["application_type"] + '/p1">' %>
+    	  <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frns/by_type/' + app_type["application_type"] + '/p2">' %> 
+    	  <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frns/by_type/' + app_type["application_type"] + '/all">' %>
+    	  <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></a></td>
   </tr>
 <% end %>
   <tr><td style="border: 0px"><br></td></tr>
@@ -74,9 +77,12 @@
     			app_type["discount_band"] 
     		end
     		%>%</td>
-    <td>$ <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></td>
-    <td>$ <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></td>
-    <td>$ <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></td>
+    <td>$ <%= '<a href="/frns/by_discount/' + app_type["discount_band"] + '/p1">' %>
+    	  <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frns/by_discount/' + app_type["discount_band"] + '/p2">' %>
+    	  <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frns/by_discount/' + app_type["discount_band"] + '/all">' %>
+    	  <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></a></td>
   </tr>
 <% end %>
 </table></p>

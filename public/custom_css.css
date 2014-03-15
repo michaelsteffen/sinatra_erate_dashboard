@@ -67,9 +67,12 @@ body {
 	margin-left: 0px; 
 }
 
-
 .index-nav .index-nav-dropdown-option {
 	font-size: 12px;  
+}
+
+td a {
+	color: #333;
 }
 
 @media print {

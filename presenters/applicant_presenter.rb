@@ -18,10 +18,10 @@ class ApplicantPresenter
 	@applicants = FundingRequest.select(:funding_year, :application_type, :ben, :applicant_name, :applicant_state, \
 				"SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_commitment_request END) AS p1_request", \
 				"SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_commitment_request END) AS p2_request") \
-		.where(:application_type => type) \
+		.where(:application_type => type, :f471_form_status => 'CERTIFIED') \
 		.group(:funding_year, :application_type, :ben, :applicant_name, :applicant_state) \
 		.order(sort_query[@sort_code]) \
 		.limit(@page_len).offset((@page-1)*@page_len)
-	@applicant_count = FundingRequest.select(:ben).where(:application_type => type).distinct.count
+	@applicant_count = FundingRequest.select(:ben).where(:application_type => type, :f471_form_status => 'CERTIFIED').distinct.count
   end
 end

@@ -31,7 +31,8 @@
     <td><%= app.ben %></td>
     <td><%= app.applicant_name %></td>
     <td><%= app.applicant_state %></td>
-    <td>$ <%= number_with_delimiter(app.total_req.to_i) %></td>
+    <td>$ <%= '<a href="' + "/frns/by_app/#{app.f471_application_number}" +'">' %>
+    	<%= number_with_delimiter(app.total_req.to_i) %></a></td>
   </tr>
 <% end %>
 </table>

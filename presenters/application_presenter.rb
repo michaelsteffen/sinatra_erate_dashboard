@@ -14,10 +14,10 @@ class ApplicationPresenter
   	@page = Integer(page) rescue 1
   	
 	@applications = FundingRequest.select(:f471_application_number, :funding_year, :application_type, :ben, :applicant_name, :applicant_state, "sum(orig_commitment_request) as total_req") \
-		.where(:application_type => type) \
+		.where(:application_type => type, :f471_form_status => 'CERTIFIED') \
 		.group(:f471_application_number, :funding_year, :application_type, :ben, :applicant_name, :applicant_state) \
 		.order(sort_query[@sort_code]) \
 		.limit(@page_len).offset((@page-1)*@page_len)
-	@application_count = FundingRequest.select(:f471_application_number).where(:application_type => type).distinct.count
+	@application_count = FundingRequest.select(:f471_application_number).where(:application_type => type, :f471_form_status => 'CERTIFIED').distinct.count
   end
 end
