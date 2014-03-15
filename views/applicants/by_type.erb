@@ -1,0 +1,45 @@
+<h1><%= @appl_presenter.type %> Applicants</h1>
+<br>
+
+<%= erb :index_nav_partial, :locals => {
+	:nav_type => "top",
+	:page => @appl_presenter.page, 
+	:num_pages => (@appl_presenter.applicant_count/@appl_presenter.page_len + 1).to_i, 
+	:num_records => @appl_presenter.applicant_count,
+	:base_url => "/applicants/by_type/#{@appl_presenter.type}/#{@appl_presenter.sort_code}/#{@appl_presenter.page_len}/",
+	:sort => @appl_presenter.sort_long_names[@appl_presenter.sort_code], 
+	:sort_options => Array.new(@appl_presenter.sort_long_names.keys.length){ |i|
+						{:label => @appl_presenter.sort_long_names.values[i], 
+						 :link => "/applicants/by_type/#{@appl_presenter.type}/#{@appl_presenter.sort_long_names.keys[i]}/#{@appl_presenter.page_len}/1"} },
+	:page_len => @appl_presenter.page_len, 
+	:page_len_options => Array.new(@appl_presenter.page_len_options.length){ |i|
+							{:label => @appl_presenter.page_len_options[i].to_s, 
+							 :link => "/applicants/by_type/#{@appl_presenter.type}/#{@appl_presenter.sort_code}/#{@appl_presenter.page_len_options[i].to_s}/#{(((@appl_presenter.page-1)*@appl_presenter.page_len/@appl_presenter.page_len_options[i]).to_i+1).to_s}"} } } %>
+
+<table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>BEN</th>
+    <th>Name</th>
+    <th>State</th>
+    <th>P1 Request</th>
+    <th>P2 Request</th>
+  </tr></thead>
+<% @appl_presenter.applicants.each do |appl| %>
+  <tr>
+    <td><%= appl.ben %></td>
+    <td><%= appl.applicant_name %></td>
+    <td><%= appl.applicant_state %></td>
+    <td>$ <%= number_with_delimiter(appl.p1_request.to_i) %></td>
+    <td>$ <%= number_with_delimiter(appl.p2_request.to_i) %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= erb :index_nav_partial, :locals => {
+	:nav_type => "bottom",
+	:page => @appl_presenter.page, 
+	:num_pages => (@appl_presenter.applicant_count/@appl_presenter.page_len + 1).to_i,
+	:num_records => @appl_presenter.applicant_count,
+	:page_len => @appl_presenter.page_len, 
+	:base_url => "/applicants/by_type/#{@appl_presenter.type}/#{@appl_presenter.sort_code}/#{@appl_presenter.page_len}/" } %>
+

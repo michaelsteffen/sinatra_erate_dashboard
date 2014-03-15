@@ -1,4 +1,5 @@
 # to do:
+# - !! application dashboard and drill down counts don't match
 # - add drill downs to individual applications, BENs, etc.
 # - change dashboard order per Mike B suggestions
 # - change "jump-the-line" presentation per Mark W suggestion
@@ -71,6 +72,12 @@ get "/applications/by_type/:type/?:sort?/?:page_len?/?:page?" do
   @title = "Applications"
   @app_presenter = ApplicationPresenter.new(@params[:type], @params[:sort], @params[:page_len], @params[:page])
   erb :"/applications/by_type"
+end
+
+get "/applicants/by_type/:type/?:sort?/?:page_len?/?:page?" do
+  @title = "Applicants"
+  @appl_presenter = ApplicantPresenter.new(@params[:type], @params[:sort], @params[:page_len], @params[:page])
+  erb :"/applicants/by_type"
 end
 
 get "/data_upload/new_upload" do
