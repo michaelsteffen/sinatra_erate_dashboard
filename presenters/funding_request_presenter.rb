@@ -1,21 +1,25 @@
 class FundingRequestPresenter
-  attr_reader :type, :priority, :appno
+  attr_reader :type, :discount_band, :priority, :appno, :ben
   attr_reader :sort_long_names, :sort_code, :page_len_options, :page_len, :page
   attr_reader :requests, :request_count  
   
-  def initialize(type, discount, appno, ben, priority, sort, page_len, page)
-    @type = type || nil
-    @appno = appno || nil
-    @ben = ben || nil
-    @priority = ["p1","p2"].include?(priority) ? priority : "all"
+  def initialize(params)
+  
+  	# assign parameters to instance attributes, except for empty strings, in which 
+  	# case instance variables should remain nil
+    @type = params[:type] unless (params[:type] == "")
+    @discount_band = params[:discount] unless (params[:discount] == "")
+    @appno = params[:appno] unless (params[:appno] == "")
+    @ben = params[:ben] unless (params[:ben] == "")
+    @priority = ["p1","p2"].include?(params[:priority]) ? params[:priority] : nil
 
     where_query_str = []
     where_query_hash = {}
     (where_query_str << "application_type = :type"; where_query_hash[:type] = @type) unless @type.nil?
-    if discount
+    if @discount_band
 		where_query_str << "orig_discount >= :band_low AND orig_discount < :band_high"
-		where_query_hash[:band_low] = discount.to_i
-		where_query_hash[:band_high] = discount.to_i + 10
+		where_query_hash[:band_low] = @discount_band.to_i
+		where_query_hash[:band_high] = @discount_band.to_i + 10
 	end
     (where_query_str << "f471_application_number = :appno"; where_query_hash[:appno] = @appno) unless @appno.nil?
     (where_query_str << "ben = :ben"; where_query_hash[:ben] = @ben) unless @ben.nil?
@@ -35,11 +39,11 @@ class FundingRequestPresenter
   				  "name" => "applicant_name ASC", 
   				  "request" => "orig_commitment_request DESC"} 
   				  
-  	@sort_code = @sort_long_names.has_key?(sort) ? sort : "frn"
+  	@sort_code = @sort_long_names.has_key?(params[:sort]) ? params[:sort] : "request"
   	
   	@page_len_options = [100, 500, 1000, 5000]
-  	@page_len = Integer(page_len) rescue 500
-  	@page = Integer(page) rescue 1
+  	@page_len = Integer(params[:page_len]) rescue 500
+  	@page = Integer(params[:page]) rescue 1
   	
 	@requests = FundingRequest.where(where_query).order(sort_query[@sort_code]) \
 					.limit(@page_len).offset((@page-1)*@page_len)

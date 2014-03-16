@@ -1,4 +1,9 @@
-<h1><%= @appl_presenter.type %> Applicants</h1>
+<h1>Applicants<br>
+<small>
+<% if @appl_presenter.type && @appl_presenter.type != "" %>
+	<strong>Type:</strong> <%= @appl_presenter.type %>&nbsp;&nbsp;
+<% end %>
+</small></h1>
 <br>
 
 <%= erb :index_nav_partial, :locals => {
@@ -6,17 +11,17 @@
 	:page => @appl_presenter.page, 
 	:num_pages => (@appl_presenter.applicant_count/@appl_presenter.page_len + 1).to_i, 
 	:num_records => @appl_presenter.applicant_count,
-	:base_url => "/applicants/by_type/#{@appl_presenter.type}/#{@appl_presenter.sort_code}/#{@appl_presenter.page_len}/",
+	:base_url => "/applicant_list?type=#{@appl_presenter.type}&sort=#{@appl_presenter.sort_code}&page_len=#{@appl_presenter.page_len}/",
 	:sort => @appl_presenter.sort_long_names[@appl_presenter.sort_code], 
 	:sort_options => Array.new(@appl_presenter.sort_long_names.keys.length){ |i|
 						{:label => @appl_presenter.sort_long_names.values[i], 
-						 :link => "/applicants/by_type/#{@appl_presenter.type}/#{@appl_presenter.sort_long_names.keys[i]}/#{@appl_presenter.page_len}/1"} },
+						 :link => "/applicant_list?type=#{@appl_presenter.type}&sort=#{@appl_presenter.sort_long_names.keys[i]}&page_len=#{@appl_presenter.page_len}&page=1"} },
 	:page_len => @appl_presenter.page_len, 
 	:page_len_options => Array.new(@appl_presenter.page_len_options.length){ |i|
 							{:label => @appl_presenter.page_len_options[i].to_s, 
-							 :link => "/applicants/by_type/#{@appl_presenter.type}/#{@appl_presenter.sort_code}/#{@appl_presenter.page_len_options[i].to_s}/#{(((@appl_presenter.page-1)*@appl_presenter.page_len/@appl_presenter.page_len_options[i]).to_i+1).to_s}"} } } %>
+							 :link => "/applicant_list?type=#{@appl_presenter.type}&sort=#{@appl_presenter.sort_code}&page_len=#{@appl_presenter.page_len_options[i].to_s}&page=#{(((@appl_presenter.page-1)*@appl_presenter.page_len/@appl_presenter.page_len_options[i]).to_i+1).to_s}"} } } %>
 
-<table class="table table-hover table-condensed">
+<small><table class="table table-hover table-condensed">
   <thead><tr>
     <th>BEN</th>
     <th>Name</th>
@@ -29,13 +34,11 @@
     <td><%= appl.ben %></td>
     <td><%= appl.applicant_name %></td>
     <td><%= appl.applicant_state %></td>
-    <td>$ <%= '<a href="' + "/frns/by_ben/#{appl.ben}" + '/p1">' %>
-    	  <%= number_with_delimiter(appl.p1_request.to_i) %></a></td>
-    <td>$ <%= '<a href="' + "/frns/by_ben/#{appl.ben}" + '/p2">' %>
-    	  <%= number_with_delimiter(appl.p2_request.to_i) %></a></td>
+    <td>$ <%= number_with_delimiter(appl.p1_request.to_i) %></td>
+    <td>$ <%= number_with_delimiter(appl.p2_request.to_i) %></td>
   </tr>
 <% end %>
-</table>
+</table></small>
 
 <%= erb :index_nav_partial, :locals => {
 	:nav_type => "bottom",

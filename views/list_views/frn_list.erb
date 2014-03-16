@@ -1,4 +1,21 @@
-<h1><%= @frn_presenter.type %> Funding Requests (<%= @frn_presenter.priority.capitalize %>)</h1>
+<h1>Funding Requests<br>
+<small>
+<% if @frn_presenter.type && @frn_presenter.type != "" %>
+	<strong>Type:</strong> <%= @frn_presenter.type %>&nbsp;&nbsp;
+<% end %>
+<% if @frn_presenter.discount_band && @frn_presenter.discount_band != "" %>
+	<strong>Discount Band:</strong> 
+		<%= if (@frn_presenter.discount_band.to_i < 90) 
+    			@frn_presenter.discount_band + '&ndash;' + (@frn_presenter.discount_band.to_i + 9).to_s + '%'
+    		else
+    			@frn_presenter.discount_band + '%'
+    		end %>&nbsp;&nbsp;
+<% end %>
+<% if @frn_presenter.priority && @frn_presenter.priority != "" %>
+	<strong>Priority:</strong> <%= @frn_presenter.priority.capitalize %>&nbsp;&nbsp;
+<% end %>
+</small>
+</h1>
 <br>
 
 <%= erb :index_nav_partial, :locals => {
@@ -6,17 +23,17 @@
 	:page => @frn_presenter.page, 
 	:num_pages => (@frn_presenter.request_count/@frn_presenter.page_len + 1).to_i, 
 	:num_records => @frn_presenter.request_count,
-	:base_url => "/frns/by_type/#{@frn_presenter.type}/#{@frn_presenter.priority}/#{@frn_presenter.sort_code}/#{@frn_presenter.page_len}/",
+	:base_url => "/frn_list?type=#{@frn_presenter.type}&priority=#{@frn_presenter.priority}&discount=#{@frn_presenter.discount_band}&sort=#{@frn_presenter.sort_code}&page_len=#{@frn_presenter.page_len}",
 	:sort => @frn_presenter.sort_long_names[@frn_presenter.sort_code], 
 	:sort_options => Array.new(@frn_presenter.sort_long_names.keys.length){ |i|
 						{:label => @frn_presenter.sort_long_names.values[i], 
-						 :link => "/frns/by_type/#{@frn_presenter.type}/#{@frn_presenter.priority}/#{@frn_presenter.sort_long_names.keys[i]}/#{@frn_presenter.page_len}/1"} },
+						 :link => "/frn_list?type=#{@frn_presenter.type}&priority=#{@frn_presenter.priority}&discount=#{@frn_presenter.discount_band}&sort=#{@frn_presenter.sort_long_names.keys[i]}&page_len=#{@frn_presenter.page_len}&page=1"} },
 	:page_len => @frn_presenter.page_len, 
 	:page_len_options => Array.new(@frn_presenter.page_len_options.length){ |i|
 							{:label => @frn_presenter.page_len_options[i].to_s, 
-							 :link => "/frns/by_type/#{@frn_presenter.type}/#{@frn_presenter.priority}/#{@frn_presenter.sort_code}/#{@frn_presenter.page_len_options[i].to_s}/#{(((@frn_presenter.page-1)*@frn_presenter.page_len/@frn_presenter.page_len_options[i]).to_i+1).to_s}"} } } %>
+							 :link => "frn_list?type=#{@frn_presenter.type}&priority=#{@frn_presenter.priority}&discount=#{@frn_presenter.discount_band}&sort=#{@frn_presenter.sort_code}&page_len=#{@frn_presenter.page_len_options[i].to_s}&page=#{(((@frn_presenter.page-1)*@frn_presenter.page_len/@frn_presenter.page_len_options[i]).to_i+1).to_s}"} } } %>
 
-<table class="table table-hover table-condensed">
+<small><table class="table table-hover table-condensed">
   <thead><tr>
     <th>App No</th>
     <th>FRN</th>
@@ -38,7 +55,7 @@
     <td>$ <%= number_with_delimiter(frn.orig_commitment_request.to_i) %></td>
   </tr>
 <% end %>
-</table>
+</table></small>
 
 <%= erb :index_nav_partial, :locals => {
 	:nav_type => "bottom",
@@ -46,5 +63,5 @@
 	:num_pages => (@frn_presenter.request_count/@frn_presenter.page_len + 1).to_i,
 	:num_records => @frn_presenter.request_count,
 	:page_len => @frn_presenter.page_len, 
-	:base_url => "/frns/by_type/#{@frn_presenter.type}/#{@frn_presenter.priority}/#{@frn_presenter.sort_code}/#{@frn_presenter.page_len}/" } %>
+	:base_url => "/frn_list?type=#{@frn_presenter.type}&priority=#{@frn_presenter.priority}&sort=#{@frn_presenter.sort_code}&page_len=#{@frn_presenter.page_len}" } %>
 

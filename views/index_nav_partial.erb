@@ -1,7 +1,7 @@
 <div class="index-nav">
 	<% if page >1 %>	
 		<div class="index-nav-element left-pager">
-			<a href="<%= base_url + (page-1).to_s %>" class="btn btn-sm btn-default">&larr; Previous</a>
+			<a href="<%= base_url + '&page=' + (page-1).to_s %>" class="btn btn-sm btn-default">&larr; Previous</a>
 		</div>
 	<% end %>
 
@@ -57,7 +57,7 @@
 
 	<% if num_pages > 1 && page != num_pages %>
 		<div class="index-nav-element right-pager">
-			<a href="<%= base_url + (page+1).to_s %>" class="btn btn-sm btn-default">Next &rarr;</a>
+			<a href="<%= base_url + '&page=' + (page+1).to_s %>" class="btn btn-sm btn-default">Next &rarr;</a>
 		</div>
 	<% end %>
 </div>

@@ -14,7 +14,7 @@
 <% @form471_dashboard.application_count_by_type.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
-    <td><%= '<a href="/applications/by_type/' + app_type["application_type"] + '">' %>
+    <td><%= '<a href="/app_list?type=' + app_type["application_type"] + '">' %>
         <%= number_with_delimiter(app_type["count"]) %></a></td>
   </tr>
 <% end %>
@@ -32,7 +32,7 @@
 <% @form471_dashboard.applicant_count_by_apptype.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
-    <td><%= '<a href="/applicants/by_type/' + app_type["application_type"] + '">' %>
+    <td><%= '<a href="/applicant_list?type=' + app_type["application_type"] + '">' %>
         <%= number_with_delimiter(app_type["count"]) %></a></td>
   </tr>
 <% end %>
@@ -54,11 +54,11 @@
 <% @form471_dashboard.requests_by_apptype.each do |app_type| %>
   <tr>
     <td><%= app_type["application_type"] %></td>
-    <td>$ <%= '<a href="/frns/by_type/' + app_type["application_type"] + '/p1">' %>
+    <td>$ <%= '<a href="/frn_list?type=' + app_type["application_type"] + '&priority=p1">' %>
     	  <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></a></td>
-    <td>$ <%= '<a href="/frns/by_type/' + app_type["application_type"] + '/p2">' %> 
+    <td>$ <%= '<a href="/frn_list?type=' + app_type["application_type"] + '&priority=p2">' %> 
     	  <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></a></td>
-    <td>$ <%= '<a href="/frns/by_type/' + app_type["application_type"] + '/all">' %>
+    <td>$ <%= '<a href="/frn_list?type=' + app_type["application_type"] + '">' %>
     	  <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></a></td>
   </tr>
 <% end %>
@@ -72,16 +72,16 @@
 <% @form471_dashboard.requests_by_discount.each do |app_type| %>
   <tr>
     <td><%= if (app_type["discount_band"].to_i < 90) 
-    			app_type["discount_band"] + '-' + (app_type["discount_band"].to_i + 9).to_s
+    			app_type["discount_band"] + '&ndash;'+ (app_type["discount_band"].to_i + 9).to_s
     		else
     			app_type["discount_band"] 
     		end
     		%>%</td>
-    <td>$ <%= '<a href="/frns/by_discount/' + app_type["discount_band"] + '/p1">' %>
+    <td>$ <%= '<a href="/frn_list?discount=' + app_type["discount_band"] + '&priority=p1">' %>
     	  <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></a></td>
-    <td>$ <%= '<a href="/frns/by_discount/' + app_type["discount_band"] + '/p2">' %>
+    <td>$ <%= '<a href="/frn_list?discount=' + app_type["discount_band"] + '&priority=p2">' %>
     	  <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></a></td>
-    <td>$ <%= '<a href="/frns/by_discount/' + app_type["discount_band"] + '/all">' %>
+    <td>$ <%= '<a href="/frn_list?discount=' + app_type["discount_band"] + '">' %>
     	  <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></a></td>
   </tr>
 <% end %>
