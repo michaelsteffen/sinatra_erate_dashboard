@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+<g id="Library">
+	<rect fill="#777777" y="2" width="10" height="44"/>
+	<rect fill="#777777" x="14" y="5" width="8" height="41"/>
+	<rect fill="#777777" x="26" y="2" width="13" height="44"/>
+	<rect fill="#777777" x="43" y="2" width="5" height="44"/>
+	<rect fill="#777777" x="58" y="2" transform="matrix(0.9194 -0.3934 0.3934 0.9194 -4.3617 26.7213)" width="10.001" height="44.001"/>
+	<rect fill="#777777" x="94" y="5" width="6" height="41"/>
+	<rect fill="#777777" x="77" y="3" width="13" height="43"/>
+	<path fill="#777777" d="M36,55v18H6V55H36 M39,52H3v24h36V52L39,52z"/>
+	<rect fill="#777777" x="16" y="76" width="10" height="3"/>
+	<polygon fill="#777777" points="41,96 0,96 3,86 38,86"/>
+	<ellipse fill="#777777" transform="matrix(0.9787 -0.2055 0.2055 0.9787 -17.8539 11.098)" cx="44.5" cy="91.5" rx="2.338" ry="3.526"/>
+	<rect fill="#777777" x="11" y="79" width="20" height="2"/>
+	<path fill="#777777" d="M88,55v18H58V55H88 M91,52H55v24h36V52L91,52z"/>
+	<rect fill="#777777" x="68" y="76" width="10" height="3"/>
+	<polygon fill="#777777" points="93,96 52,96 55,86 90,86   "/>
+	<ellipse fill="#777777" transform="matrix(0.9787 -0.2055 0.2055 0.9787 -16.744 21.7842)" cx="96.5" cy="91.5" rx="2.338" ry="3.526"/>
+	<rect fill="#777777" x="63" y="79" width="20" height="2"/>
+</g>
+</svg>

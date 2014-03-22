@@ -3,6 +3,8 @@
 # - change "jump-the-line" presentation per Mark W suggestion
 # - add line counts to first two items in item 24 tables
 # - add block 4 data
+# - highlight active section in Nav
+# - refactor: add css classes to front page
 # - add totals to demand table
 # - add drill down for item 24 data
 # - better error handling for uplaod files
@@ -45,28 +47,33 @@ get "/" do
   	@title = "Welcome"
   	@form471_small = Form471DashboardPresenter.new(:small)
   	@item24_small = Item24DashboardPresenter.new(:small)
-  	erb :"index"
+  	erb :"new_index2"
 end
 
-get "/dashboards/form471" do
+get "/dashboards/infrastructure" do
+  @title = "Broadband"
+  erb :"/dashboards/stub"
+end
+
+get "/dashboards/apps" do
   redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
 
-  @title = "Form 471 Dashboard"
+  @title = "Applications"
   @form471_dashboard = Form471DashboardPresenter.new
-  erb :"/dashboards/form471"
+  erb :"/dashboards/apps"
 end
 
-get "/dashboards/item24" do
+get "/dashboards/spending" do
   redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
 
-  @title = "Item 24 Dashboard"
+  @title = "Pricing & Spending"
   @item24_dashboard = Item24DashboardPresenter.new
-  erb :"/dashboards/item24"
+  erb :"/dashboards/spending"
 end
 
-get "/dashboards/jump_the_line" do
-  @title = "Jump the Line Dashboard"
-  erb :"/dashboards/jump_the_line"
+get "/dashboards/processing" do
+  @title = "Application Processing"
+  erb :"/dashboards/stub"
 end
 
 get "/app_list" do
@@ -192,9 +199,9 @@ end
 helpers do
   def title
     if @title
-      "Test E-rate Dashboard: #{@title}"
+      "E-rate Dashboard Mock-Up: #{@title}"
     else
-      "Test E-rate Dashboard"
+      "E-rate Dashboard Mock-Up"
     end
   end
   

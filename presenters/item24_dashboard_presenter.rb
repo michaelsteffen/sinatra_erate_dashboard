@@ -27,16 +27,16 @@ class Item24DashboardPresenter
 		@percent_of_p1 = @item24_requests.to_f / FundingRequest.connection.select_all(@@queries[:total_p1requests_query])[0]["sum"].to_f
 	
 		@requests_by_type = FundingRequest.connection.select_all(@@queries[:requests_by_type_query])
-		@multiple_types = FundingRequest.connection.select_all(@@queries[:multiple_types_query])[0]["sum"]
+		@multiple_types = FundingRequest.connection.select_all(@@queries[:multiple_types_query])[0]
 
 		@requests_by_speed = FundingRequest.connection.select_all(@@queries[:requests_by_speed_query])
-		@multiple_speeds = FundingRequest.connection.select_all(@@queries[:multiple_speed_query])[0]["sum"]
+		@multiple_speeds = FundingRequest.connection.select_all(@@queries[:multiple_speed_query])[0]
 
 		@speed_tier_names = { '1' => '< 1.5 Mbps', '2' => '1.5 - 9 Mbps', '3' => '10 - 99 Mbps', 
 							  '4' => '100 - 999 Mbps', '5' => '1 - 9.9 Gbps', '6' => '10+ Gbps'} 
 
 		single_ctype_frns = FundingRequest.connection.select_all(@@queries[:single_ctype_frns_query])	
-		@conn_types = ['100 Mbps fiber', '1 Gbps fiber', '10 Gbps fiber', 'T1/DS1 (1.5 Mbps)', 'T3/DS3 (45 Mbps)']
+		@conn_types = ['10 Mbps fiber', '100 Mbps fiber', '1 Gbps fiber', '10 Gbps fiber', 'T1/DS1 (1.5 Mbps)', 'T3/DS3 (45 Mbps)']
 		@single_ctype_stats = {}
 		conn_types.each do |conn_type|
 			frns = single_ctype_frns.select { |frn| frn['speed_type_category'] == conn_type}
@@ -75,17 +75,18 @@ class Item24DashboardPresenter
 		endquery
 		
 	@@queries[:requests_by_type_query] = <<-endquery
-		CREATE TEMPORARY TABLE frn_num_connection_types ON COMMIT DROP AS
-		SELECT frn, COUNT(*) AS count_types
-		FROM ( SELECT DISTINCT frn, type_of_connections
-			   FROM connections ) as t1
-		GROUP BY frn;
+		WITH frn_num_connection_types AS (
+			SELECT frn, COUNT(*) AS count_types
+			FROM ( SELECT DISTINCT frn, type_of_connections
+			   	   FROM connections ) as t1
+			GROUP BY frn )
 
-		SELECT type_of_connections, SUM(funding_requests.orig_commitment_request) 
-		FROM ( SELECT DISTINCT frn, type_of_connections
+		SELECT type_of_connections, SUM(t1.num_lines) AS lines, SUM(funding_requests.orig_commitment_request) AS request
+		FROM ( SELECT frn, type_of_connections, SUM(number_of_lines) AS num_lines 
 			   FROM connections
 			   WHERE frn IN (SELECT frn FROM frn_num_connection_types WHERE count_types = 1) AND
-				type_of_connections != 'Cellular Wireless' ) AS t1 
+				type_of_connections != 'Cellular Wireless' 
+			   GROUP BY frn, type_of_connections) AS t1 
 			   LEFT JOIN funding_requests ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED'
 		GROUP BY type_of_connections
@@ -93,30 +94,31 @@ class Item24DashboardPresenter
 		endquery
 
 	@@queries[:multiple_types_query] = <<-endquery
-		CREATE TEMPORARY TABLE frn_num_connection_types ON COMMIT DROP AS
-		SELECT frn, COUNT(*) AS count_types
-		FROM ( SELECT DISTINCT frn, type_of_connections
-			   FROM connections ) as t1
-		GROUP BY frn;
+		WITH frn_num_connection_types AS (
+			SELECT frn, COUNT(*) AS count_types
+			FROM ( SELECT DISTINCT frn, type_of_connections
+			   	   FROM connections ) as t1
+			GROUP BY frn )
 	
-		SELECT SUM(funding_requests.orig_commitment_request) 
-		FROM ( SELECT DISTINCT frn
+		SELECT SUM(t1.num_lines) AS lines, SUM(funding_requests.orig_commitment_request) AS request
+		FROM ( SELECT frn, SUM(number_of_lines) AS num_lines
 			   FROM connections
-			   WHERE frn IN (SELECT frn FROM frn_num_connection_types WHERE count_types > 1) ) AS t1 
+			   WHERE frn IN (SELECT frn FROM frn_num_connection_types WHERE count_types > 1) 
+			   GROUP BY frn ) AS t1 
 		LEFT JOIN funding_requests
 		ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED';
 		endquery
 	
 	@@queries[:requests_by_speed_query] = <<-endquery
-		CREATE TEMPORARY TABLE frn_num_speeds ON COMMIT DROP AS
-		SELECT frn, COUNT(*) AS count_speeds
-		FROM ( SELECT DISTINCT frn, download_speed
-			   FROM connections ) as t1
-		GROUP BY frn;
-
-		SELECT t1.speed_tier, SUM(funding_requests.orig_commitment_request) 
-		FROM ( SELECT DISTINCT frn, 
+		WITH frn_num_speeds AS (
+			SELECT frn, COUNT(*) AS count_speeds
+			FROM ( SELECT DISTINCT frn, download_speed
+			   	   FROM connections ) as t1
+			GROUP BY frn )
+			
+		SELECT t1.speed_tier, SUM(t1.num_lines) AS lines, SUM(funding_requests.orig_commitment_request) AS request
+		FROM ( SELECT frn, SUM(number_of_lines) AS num_lines, 
 			   CASE WHEN download_speed < 1.5 THEN 1 
 			   		WHEN 1.5 <= download_speed AND download_speed < 10 THEN 2 
 			   		WHEN 10 <= download_speed AND download_speed < 100 THEN 3 
@@ -126,7 +128,8 @@ class Item24DashboardPresenter
 			   END AS speed_tier
 			   FROM connections
 			   WHERE frn IN (SELECT frn FROM frn_num_speeds WHERE count_speeds = 1) AND 
-			    type_of_connections != 'Cellular Wireless' ) AS t1 
+			    type_of_connections != 'Cellular Wireless' 
+			   GROUP BY frn, speed_tier ) AS t1 
 			   LEFT JOIN funding_requests ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED'
 		GROUP BY t1.speed_tier
@@ -134,31 +137,33 @@ class Item24DashboardPresenter
 		endquery
 		
 	@@queries[:multiple_speed_query] = <<-endquery
-		CREATE TEMPORARY TABLE frn_num_speeds ON COMMIT DROP AS
-		SELECT frn, COUNT(*) AS count_speeds
-		FROM ( SELECT DISTINCT frn, download_speed
-			   FROM connections ) as t1
-		GROUP BY frn;
+		WITH frn_num_speeds AS (
+			SELECT frn, COUNT(*) AS count_speeds
+			FROM ( SELECT DISTINCT frn, download_speed
+			   	   FROM connections ) as t1
+			GROUP BY frn )
 
-		SELECT SUM(funding_requests.orig_commitment_request) 
-		FROM ( SELECT DISTINCT frn
+		SELECT SUM(t1.num_lines) AS lines, SUM(funding_requests.orig_commitment_request) AS request
+		FROM ( SELECT frn, SUM(number_of_lines) AS num_lines
 			   FROM connections
 			   WHERE frn IN (SELECT frn FROM frn_num_speeds WHERE count_speeds > 1) AND
-				type_of_connections != 'Cellular Wireless' ) AS t1 
+				type_of_connections != 'Cellular Wireless' 
+			   GROUP BY frn ) AS t1 
 		LEFT JOIN funding_requests ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED';
 		endquery
 		
 	@@queries[:single_ctype_frns_query] = <<-endquery
-		CREATE TEMPORARY TABLE single_connection_type_frns ON COMMIT DROP AS
-		SELECT frn, COUNT(*) AS count_connection_types
-		FROM connections 
-		GROUP BY frn
-		HAVING COUNT(*) = 1
-		ORDER BY frn;	
+		WITH single_connection_type_frns AS (
+			SELECT t1.frn, COUNT(*) 
+			FROM (SELECT DISTINCT frn, type_of_connections, download_speed
+		 		  FROM connections) AS t1
+			GROUP BY t1.frn 
+			HAVING COUNT(*) = 1 )
 	
 		SELECT connections.number_of_lines, funding_requests.orig_r_monthly_cost, 
-			CASE WHEN connections.type_of_connections='Fiber optic/OC-x' AND connections.download_speed = 100 THEN '100 Mbps fiber'
+			CASE WHEN connections.type_of_connections='Fiber optic/OC-x' AND connections.download_speed = 10 THEN '10 Mbps fiber'
+				 WHEN connections.type_of_connections='Fiber optic/OC-x' AND connections.download_speed = 100 THEN '100 Mbps fiber'
 			     WHEN connections.type_of_connections='Fiber optic/OC-x' AND connections.download_speed >= 1000 AND connections.download_speed < 1100 THEN '1 Gbps fiber'
 			     WHEN connections.type_of_connections='Fiber optic/OC-x' AND connections.download_speed >= 10000 AND connections.download_speed < 11000 THEN '10 Gbps fiber'
 			     WHEN connections.type_of_connections='T1/DS-1' AND connections.download_speed = 1.5 THEN 'T1/DS1 (1.5 Mbps)'
