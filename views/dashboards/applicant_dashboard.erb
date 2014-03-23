@@ -1,0 +1,30 @@
+<h1>Applicants</h1>
+
+<p>All tables below reflect information as entered by applicants, without validation or error correction.</p>
+
+<div class="page-header">
+<h3>Applicants: <strong><%= number_with_delimiter(@applicant_dashboard.num_applicants) %></strong></h3>
+</div>
+
+<p><table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>Application Type</th>
+    <th>Applicants</th>
+    <th>Applications</th>
+    <th>Avg Schools or Libraries per Application</th>
+  </tr></thead>
+<% @applicant_dashboard.app_types.each do |app_type| %>
+  <tr>
+    <td><%= app_type["application_type"] %></td>
+    <td><%= '<a href="/applicant_list?type=' + app_type["application_type"] + '">' %>
+        <%= number_with_delimiter(app_type["applicants"]) %></a></td>
+    <td><%= '<a href="/application_list?type=' + app_type["application_type"] + '">' %>
+        <%= number_with_delimiter(app_type["applications"]) %></a></td>
+    <td>-</td>
+  </tr>
+<% end %>
+</table></p>
+
+<p><small><em>Some applicants submit multiple application types, so are double counted in this breakout.</em></small></p>
+
+

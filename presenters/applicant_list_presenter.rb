@@ -1,4 +1,4 @@
-class ApplicantPresenter
+class ApplicantListPresenter
   attr_reader :type, :sort_long_names, :sort_code, :page_len_options, :page_len, :page
   attr_reader :applicants, :applicant_count  
   

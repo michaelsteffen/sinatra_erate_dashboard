@@ -1,0 +1,151 @@
+<h1>Prices & Spending</h1>
+
+<p>All tables below reflect information as entered by applicants, without validation or error correction.</p>
+
+<div class="page-header">
+<h3>Broadband Prices</h3>
+</div>
+
+<table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>Connection Type</th>
+    <th>Lines</th>
+    <th>Median Price</th>
+    <th>25th Percentile</th>
+    <th>75th Percentile</th>
+  </tr></thead>
+<% @spending_dashboard.conn_types.each do |ctype| %>
+  <tr>
+  	<td><%= ctype %></td>
+    <td><%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['lines']) %></td>
+    <td>$ <%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['price_median'].round(0).to_i) %></td>
+    <td>$ <%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['price_p25'].round(0).to_i) %></td>
+    <td>$ <%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['price_p75'].round(0).to_i) %></td>
+  </tr>
+<% end %> 
+</table> 
+
+<p><small><em>Data based only on funding requests containing a single connection type & speed.  For requests that contain multiple connection types or speeds, the data we collect do not currently allow us to allocate costs to the different connections. In addition, our current data do not allow us to seperately identify those funding requests that bundle phone service with broadband; to the extent applicants do so, the prices above overestimate broadband pricing.</em></small></p>
+
+<div class="page-header">
+<h3>Connectivity-Related Funding Requests</h3>
+</div>
+<p>Total requests associated with "item 24" submissions, excluding cellular-only requests.  $<%= (@spending_dashboard.item24_requests.to_f / 1000000).round(0) %> million in total requests, or <%= (@spending_dashboard.percent_of_p1 * 100).round(0) %>%</strong> of all Priority 1 funding requests.  However, all dollar totals include phone service to the extent it is bundled on the same funding request with data connections.</p>
+<br>
+
+<table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>Connection Type (by Funding Request)</th>
+    <th style="border-top: 0px">Lines</th>
+    <th>Requests</th>
+  </tr></thead>
+<% @spending_dashboard.requests_by_type.each do |conn_type| %>
+  <tr>
+    <td><%= conn_type["type_of_connections"] %></td>
+    <td><%= number_with_delimiter(conn_type["lines"].to_i) %></td>
+    <td>$ <%= number_with_delimiter(((conn_type["request"]).to_f / 1000).round(0)) %></td>
+  </tr>
+<% end %>
+  <tr>
+    <td><i>Multiple Connection Types</i></td>
+    <td><%= number_with_delimiter(@spending_dashboard.multiple_types["lines"].to_i) %></td>
+    <td>$ <%= number_with_delimiter((@spending_dashboard.multiple_types["request"].to_f / 1000).round(0)) %></td>
+  </tr>
+  <tr><td style="border: 0px"><br></td></tr>
+  <thead><tr>
+    <th style="border-top: 0px">Connection Speed (by Funding Request)</th>
+    <th style="border-top: 0px">Lines</th>
+    <th style="border-top: 0px">Requests</th>
+  </tr></thead>
+<% @spending_dashboard.requests_by_speed.each do |tier| %>
+  <tr>
+    <td><%= @spending_dashboard.speed_tier_names[tier["speed_tier"]] %></td>
+    <td><%= number_with_delimiter(tier["lines"].to_i) %></td>
+    <td>$ <%= number_with_delimiter(((tier["request"]).to_f / 1000).round(0)) %></td>
+  </tr>
+<% end %>  
+  <tr>
+    <td><i>Multiple Connection Speeds</i></td>
+    <td><%= number_with_delimiter(@spending_dashboard.multiple_speeds["lines"].to_i) %></td>
+    <td>$ <%= number_with_delimiter((@spending_dashboard.multiple_speeds["request"].to_f / 1000).round(0)) %></td>
+  </tr>
+
+</table>
+
+<p><small><em>All dollar amounts in thousands.</em></small></p>
+
+<div class="page-header">
+<h3>Total Requested Funding: <strong>$<%= (@spending_dashboard.requested_funding["all"].to_f / 1000000).round(0) %> million</strong></h3>
+</div>
+
+<p><table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>Application Type</th>
+    <th>P1 Requests</th>
+    <th>P2 Requests</th>
+    <th>Total Requests</th>
+  </tr></thead>
+<% @spending_dashboard.requests_by_apptype.each do |app_type| %>
+  <tr>
+    <td><%= app_type["application_type"] %></td>
+    <td>$ <%= '<a href="/frn_list?type=' + app_type["application_type"] + '&priority=p1">' %>
+    	  <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frn_list?type=' + app_type["application_type"] + '&priority=p2">' %> 
+    	  <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frn_list?type=' + app_type["application_type"] + '">' %>
+    	  <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></a></td>
+  </tr>
+<% end %>
+  <tr><td style="border: 0px"><br></td></tr>
+  <thead><tr>
+    <th style="border-top: 0px">Discount Band</th>
+    <th style="border-top: 0px">P1 Requests</th>
+    <th style="border-top: 0px">P2 Requests</th>
+    <th style="border-top: 0px">Total Requests</th>
+  </tr></thead>
+<% @spending_dashboard.requests_by_discount.each do |app_type| %>
+  <tr>
+    <td><%= if (app_type["discount_band"].to_i < 90) 
+    			app_type["discount_band"] + '&ndash;'+ (app_type["discount_band"].to_i + 9).to_s
+    		else
+    			app_type["discount_band"] 
+    		end
+    		%>%</td>
+    <td>$ <%= '<a href="/frn_list?discount=' + app_type["discount_band"] + '&priority=p1">' %>
+    	  <%= number_with_delimiter((app_type["p1_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frn_list?discount=' + app_type["discount_band"] + '&priority=p2">' %>
+    	  <%= number_with_delimiter((app_type["p2_request"].to_f / 1000).round(0)) %></a></td>
+    <td>$ <%= '<a href="/frn_list?discount=' + app_type["discount_band"] + '">' %>
+    	  <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></a></td>
+  </tr>
+<% end %>
+</table></p>
+
+<p><small><em>All dollar amounts in thousands</em></small></p>
+
+<div class="page-header">
+<h3>Total Pre-Discount Costs: <strong>$<%= (@spending_dashboard.prediscount_costs["all"].to_f / 1000000).round(0) %> million</strong></h3>
+</div>
+
+<p><table class="table table-hover table-condensed">
+  <thead><tr>
+  	<th></th>
+    <th>Priority 1</th>
+    <th>Priority 2</th>
+    <th>All Requests</th>
+  </tr></thead>
+  <tr>
+  	<td><strong>Pre-Discount Costs</strong></td>
+    <td>$ <%= number_with_delimiter((@spending_dashboard.prediscount_costs["p1"].to_f / 1000).round(0)) %></td>
+    <td>$ <%= number_with_delimiter((@spending_dashboard.prediscount_costs["p2"].to_f / 1000).round(0)) %></td>
+    <td>$ <%= number_with_delimiter((@spending_dashboard.prediscount_costs["all"].to_f / 1000).round(0)) %></td>
+  </tr>
+  <tr>
+    <td><strong>Average Discount</strong></td>
+    <td><%= (@spending_dashboard.avg_discount["p1"] * 100).to_i %>%</td>
+    <td><%= (@spending_dashboard.avg_discount["p2"] * 100).to_i %>%</td>
+    <td><%= (@spending_dashboard.avg_discount["all"] * 100).to_i %>%</td>
+  </tr>
+</table></p>
+
+<p><small><em>All dollar amounts in thousands</em></small></p>

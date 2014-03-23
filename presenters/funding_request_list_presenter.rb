@@ -1,4 +1,4 @@
-class FundingRequestPresenter
+class FundingRequestListPresenter
   attr_reader :type, :discount_band, :priority, :appno, :ben
   attr_reader :sort_long_names, :sort_code, :page_len_options, :page_len, :page
   attr_reader :requests, :request_count  

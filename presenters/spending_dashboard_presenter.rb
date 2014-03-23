@@ -1,8 +1,10 @@
-class Item24DashboardPresenter
+class SpendingDashboardPresenter
   @@queries = {}
+  attr_reader :conn_types, :single_ctype_stats
   attr_reader :item24_requests, :percent_of_p1, :requests_by_type, :multiple_types
   attr_reader :requests_by_speed, :multiple_speed, :speed_tier_names, :multiple_speeds
-  attr_reader :conn_types, :single_ctype_stats
+  attr_reader :requested_funding, :requests_by_apptype, :requests_by_discount, :prediscount_costs, :avg_discount
+
   
   def initialize(init_type = :full)
 	self.initialize_query_strings
@@ -15,7 +17,8 @@ class Item24DashboardPresenter
 		conn_prices = []
 		conn_lines = 0
 		frns.each do |frn|
-			#conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} )
+			# commented out line would calculate median of lines rather than median of requests
+			# conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} )
 			conn_prices << frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d
 			conn_lines += frn['number_of_lines'].to_i
 		end
@@ -23,6 +26,28 @@ class Item24DashboardPresenter
 		@single_ctype_stats[conn_type] = {}
 		@single_ctype_stats[conn_type]['price_median'] = percentile(conn_prices, 50)
 	else 
+		# pricing for individual service/bandwidth types
+		single_ctype_frns = FundingRequest.connection.select_all(@@queries[:single_ctype_frns_query])	
+		@conn_types = ['10 Mbps fiber', '100 Mbps fiber', '1 Gbps fiber', '10 Gbps fiber', 'T1/DS1 (1.5 Mbps)', 'T3/DS3 (45 Mbps)']
+		@single_ctype_stats = {}
+		conn_types.each do |conn_type|
+			frns = single_ctype_frns.select { |frn| frn['speed_type_category'] == conn_type}
+			conn_prices = []
+			conn_lines = 0
+			frns.each do |frn|
+				# commented out line would calculate median of lines rather than median of requests
+				# conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} ) 
+				conn_prices << frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d
+				conn_lines += frn['number_of_lines'].to_i
+			end
+			@single_ctype_stats[conn_type] = {}
+			@single_ctype_stats[conn_type]['price_p25'] = percentile(conn_prices, 25)
+			@single_ctype_stats[conn_type]['price_median'] = percentile(conn_prices, 50)
+			@single_ctype_stats[conn_type]['price_p75'] = percentile(conn_prices, 75)
+			@single_ctype_stats[conn_type]['lines'] = conn_lines
+		end
+		
+		# requested funding by connection type and connection speed
 		@item24_requests = FundingRequest.connection.select_all(@@queries[:item24_requests_query])[0]["sum"]
 		@percent_of_p1 = @item24_requests.to_f / FundingRequest.connection.select_all(@@queries[:total_p1requests_query])[0]["sum"].to_f
 	
@@ -34,25 +59,25 @@ class Item24DashboardPresenter
 
 		@speed_tier_names = { '1' => '< 1.5 Mbps', '2' => '1.5 - 9 Mbps', '3' => '10 - 99 Mbps', 
 							  '4' => '100 - 999 Mbps', '5' => '1 - 9.9 Gbps', '6' => '10+ Gbps'} 
-
-		single_ctype_frns = FundingRequest.connection.select_all(@@queries[:single_ctype_frns_query])	
-		@conn_types = ['10 Mbps fiber', '100 Mbps fiber', '1 Gbps fiber', '10 Gbps fiber', 'T1/DS1 (1.5 Mbps)', 'T3/DS3 (45 Mbps)']
-		@single_ctype_stats = {}
-		conn_types.each do |conn_type|
-			frns = single_ctype_frns.select { |frn| frn['speed_type_category'] == conn_type}
-			conn_prices = []
-			conn_lines = 0
-			frns.each do |frn|
-				#conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} )
-				conn_prices << frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d
-				conn_lines += frn['number_of_lines'].to_i
-			end
-			@single_ctype_stats[conn_type] = {}
-			@single_ctype_stats[conn_type]['price_p25'] = percentile(conn_prices, 25)
-			@single_ctype_stats[conn_type]['price_median'] = percentile(conn_prices, 50)
-			@single_ctype_stats[conn_type]['price_p75'] = percentile(conn_prices, 75)
-			@single_ctype_stats[conn_type]['lines'] = conn_lines
-		end
+		
+		# overall requested funding
+		@requested_funding = {}
+		@requested_funding["all"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["total_request"]
+		@requested_funding["p1"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["p1_request"]
+		@requested_funding["p2"] = FundingRequest.connection.select_all(@@queries[:requested_funding_query])[0]["p2_request"]
+	
+		@requests_by_apptype = FundingRequest.connection.select_all(@@queries[:requests_by_apptype_query])
+		@requests_by_discount = FundingRequest.connection.select_all(@@queries[:requests_by_discount_query])
+	
+		@prediscount_costs = {}
+		@prediscount_costs["all"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["total_costs"]
+		@prediscount_costs["p1"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["p1_costs"]
+		@prediscount_costs["p2"] = FundingRequest.connection.select_all(@@queries[:prediscount_costs_query])[0]["p2_costs"]	
+	
+		@avg_discount = {}
+		@avg_discount["all"] = @requested_funding["all"].to_f / @prediscount_costs["all"].to_f
+		@avg_discount["p1"] = @requested_funding["p1"].to_f / @prediscount_costs["p1"].to_f
+		@avg_discount["p2"] = @requested_funding["p2"].to_f / @prediscount_costs["p2"].to_f	
 	end
 
   end
@@ -172,6 +197,47 @@ class Item24DashboardPresenter
 			END AS speed_type_category
 		FROM connections LEFT JOIN funding_requests ON connections.frn = funding_requests.frn
 		WHERE connections.frn IN (SELECT frn FROM single_connection_type_frns)
+		endquery
+	
+		@@queries[:requested_funding_query] = <<-endquery	
+		SELECT 
+			SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_commitment_request END) AS p1_request,
+			SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_commitment_request END) AS p2_request,
+			SUM(orig_commitment_request) AS total_request
+		FROM funding_requests
+		WHERE f471_form_status = 'CERTIFIED';
+		endquery
+
+	@@queries[:requests_by_apptype_query] = <<-endquery			
+		SELECT application_type,
+			SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_commitment_request END) AS p1_request,
+			SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_commitment_request END) AS p2_request,
+			SUM(orig_commitment_request) AS total_request
+		FROM funding_requests
+		WHERE f471_form_status = 'CERTIFIED'
+		GROUP BY application_type
+		ORDER BY application_type;
+		endquery
+
+	@@queries[:requests_by_discount_query] = <<-endquery					
+		SELECT 
+			TRUNC(orig_discount/10.) * 10. AS discount_band,
+			SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_commitment_request END) AS p1_request,
+			SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_commitment_request END) AS p2_request,
+			SUM(orig_commitment_request) AS total_request
+		FROM funding_requests
+		WHERE f471_form_status = 'CERTIFIED'
+		GROUP BY discount_band
+		ORDER BY discount_band;
+		endquery
+
+	@@queries[:prediscount_costs_query] = <<-endquery					
+		SELECT 
+			SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_total_cost END) AS p1_costs,
+			SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_total_cost END) AS p2_costs,
+			SUM(orig_total_cost) AS total_costs
+		FROM funding_requests
+		WHERE f471_form_status = 'CERTIFIED';
 		endquery
   end
   

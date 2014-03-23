@@ -1,4 +1,4 @@
-class ApplicationPresenter
+class ApplicationListPresenter
   attr_reader :type, :sort_long_names, :sort_code, :page_len_options, :page_len, :page
   attr_reader :applications, :application_count  
   

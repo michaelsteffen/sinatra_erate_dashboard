@@ -1,13 +1,15 @@
 # to do:
-# - change dashboard order per Mike B suggestions
-# - change "jump-the-line" presentation per Mark W suggestion
-# - add line counts to first two items in item 24 tables
+# - create processing dashboard
+# - create infrastructure dashboard
+# - add block 4 table to applicant dashboard
+# - add entity count to applicant list
+# - add click-through for connection speed and type spending info
 # - add block 4 data
-# - highlight active section in Nav
+# - highlight active section in nav
 # - refactor: add css classes to front page
 # - add totals to demand table
 # - add drill down for item 24 data
-# - better error handling for uplaod files
+# - better error handling for upload files
 #		- check that files are actually CSV files
 # 		- do initial error checking of upload file headers
 #		- catch other errors??
@@ -45,9 +47,9 @@ get "/" do
     redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
   	
   	@title = "Welcome"
-  	@form471_small = Form471DashboardPresenter.new(:small)
-  	@item24_small = Item24DashboardPresenter.new(:small)
-  	erb :"new_index2"
+  	@applicant_small = ApplicantDashboardPresenter.new(:small)
+  	@spending_small = SpendingDashboardPresenter.new(:small)
+  	erb :"index"
 end
 
 get "/dashboards/infrastructure" do
@@ -59,16 +61,16 @@ get "/dashboards/apps" do
   redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
 
   @title = "Applications"
-  @form471_dashboard = Form471DashboardPresenter.new
-  erb :"/dashboards/apps"
+  @applicant_dashboard = ApplicantDashboardPresenter.new
+  erb :"/dashboards/applicant_dashboard"
 end
 
 get "/dashboards/spending" do
   redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
 
   @title = "Pricing & Spending"
-  @item24_dashboard = Item24DashboardPresenter.new
-  erb :"/dashboards/spending"
+  @spending_dashboard = SpendingDashboardPresenter.new
+  erb :"/dashboards/spending_dashboard"
 end
 
 get "/dashboards/processing" do
@@ -76,21 +78,21 @@ get "/dashboards/processing" do
   erb :"/dashboards/stub"
 end
 
-get "/app_list" do
+get "/application_list" do
   @title = "Applications"
-  @app_presenter = ApplicationPresenter.new(@params)
-  erb :"/list_views/app_list"
+  @application_list = ApplicationListPresenter.new(@params)
+  erb :"/list_views/application_list"
 end
 
 get "/applicant_list" do
   @title = "Applicants"
-  @appl_presenter = ApplicantPresenter.new(@params)
+  @applicant_list = ApplicantListPresenter.new(@params)
   erb :"/list_views/applicant_list"
 end
 
 get "/frn_list" do
   @title = "Funding Requests"
-  @frn_presenter = FundingRequestPresenter.new(@params)  
+  @frn_list = FundingRequestListPresenter.new(@params)  
   erb :"/list_views/frn_list"
 end
 
