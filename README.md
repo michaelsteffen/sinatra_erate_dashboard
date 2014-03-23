@@ -9,13 +9,13 @@ The app is built with Sinatra (a framework for web apps using the Ruby programmi
 
 The simplest way to get a sense of the app is probably as follows:
 
-- Start in the /db/migrate directory.  The files there are used by a standard utility called Rake (= "Ruby make") to build the backend Postgres database.  Even without knowing how rake works, they should give you a sense of the table structure.
+- Start with /db/schema.rb.  This file is used by a standard utility called Rake (= "Ruby make") to build the backend Postgres database.  Even without knowing how rake works, they should give you a sense of the table structure.
 
 - Next, look at /app.rb.  That's the main web app file, which consists of a series of "routes" -- basically, the URLs through which the app can be accessed and the different things they do.  Again, even without knowing any Ruby, that should give you the overview of the app.
 
 - Then take a look at the files in /presenters/.  These are the Ruby modules that build the Form 471 and Item 24 dashboards, including the underlying SQL. 
 
-The master branch should reflect what is deployed on Heroku, and hopefully more or less works.  I'm also working on a feature branch that reflects the latest suggestions from Mark, Lisa, and Mike -- and which may or may not actually work at any given moment.
+The master branch should reflect what is deployed on Heroku, and hopefully more or less works.  I'm also maintaining a "develop" branch that reflects my latest tinkering -- and which may or may not actually work at any given moment. (I previously had a "feature" branch for specific suggestions from Lisa, Mark, and Mike B, but recently merged it back into master.)
 
 Take a look at [this tutorial](http://ruby.railstutorial.org/) if you want help setting Ruby up on your mac.  The tutorial is for Rails, another Ruby-based web app framework that is a cousin of Sinatra, so it isn't 100% applicable, but the basic Ruby set-up should be the same, and many of the concepts are applicable.  
 
