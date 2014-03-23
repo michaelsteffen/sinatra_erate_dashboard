@@ -36,6 +36,45 @@ body {
 	max-width: 400px;
 }
 
+.index-nav {
+	margin-top: 18px; 
+	margin-bottom: 18px;
+}
+
+.index-nav .index-nav-element {
+	display: inline-block; 
+	vertical-align: middle;
+}
+
+.index-nav .left-pager {
+}
+
+.index-nav .right-pager {
+	margin-left: 25px;
+	float: right
+}
+
+.index-nav .index-nav-label {
+	font-size: 12px;  
+	line-height: 1; 
+	margin-right: 5px; 
+	margin-left: 25px; 
+	margin-top: 0px; 
+	margin-bottom:0px
+}
+
+.index-nav .index-nav-left-label { 
+	margin-left: 0px; 
+}
+
+.index-nav .index-nav-dropdown-option {
+	font-size: 12px;  
+}
+
+td a {
+	color: #333;
+}
+
 @media print {
     body {
 		padding-top: 0px;

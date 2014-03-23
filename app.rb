@@ -1,10 +1,22 @@
-# todo:
-# - add totals to tables
-# - better error handling for uplaod files
+# to do:
+# - create processing dashboard
+# - create infrastructure dashboard
+# - add block 4 table to applicant dashboard
+# - add entity count to applicant list
+# - add click-through for connection speed and type spending info
+# - add block 4 data
+# - highlight active section in nav
+# - refactor: add css classes to front page
+# - add totals to demand table
+# - add drill down for item 24 data
+# - better error handling for upload files
 #		- check that files are actually CSV files
 # 		- do initial error checking of upload file headers
 #		- catch other errors??
+# - add individual FRN, Application, BEN display
 # - add activerecord multiple insert to speed up data uploads
+# - move to-do list to github tickets
+# - refactor: rewrite applicant, application, and frn presenters to take a parameter hash
 # - refactor: create "get from CSV" method for FundingRequest and Connections models, passing file name
 # - refactor: move CSV mappings into FundingRequest and Connections models?
 # - refactor: add css class for table styling for hidden row
@@ -13,6 +25,7 @@
 # - refactor: add loop for upload types to upload log page
 # - refactor: more efficient query for "unless" calls to test if import is ongoing
 # - eliminate use of <br> for spacing
+# - normalize data structure?
 # - move to database.yml for configuration?
 
 require 'sinatra'
@@ -34,30 +47,53 @@ get "/" do
     redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
   	
   	@title = "Welcome"
-  	@form471_small = Form471DashboardPresenter.new(:small)
-  	@item24_small = Item24DashboardPresenter.new(:small)
+  	@applicant_small = ApplicantDashboardPresenter.new(:small)
+  	@spending_small = SpendingDashboardPresenter.new(:small)
   	erb :"index"
 end
 
-get "/dashboards/form471" do
-  redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
-
-  @title = "Form 471 Dashboard"
-  @form471_dashboard = Form471DashboardPresenter.new
-  erb :"/dashboards/form471"
+get "/dashboards/infrastructure" do
+  @title = "Broadband"
+  erb :"/dashboards/stub"
 end
 
-get "/dashboards/item24" do
+get "/dashboards/apps" do
   redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
 
-  @title = "Item 24 Dashboard"
-  @item24_dashboard = Item24DashboardPresenter.new
-  erb :"/dashboards/item24"
+  @title = "Applications"
+  @applicant_dashboard = ApplicantDashboardPresenter.new
+  erb :"/dashboards/applicant_dashboard"
 end
 
-get "/dashboards/jump_the_line" do
-  @title = "Jump the Line Dashboard"
-  erb :"/dashboards/jump_the_line"
+get "/dashboards/spending" do
+  redirect "/working" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
+
+  @title = "Pricing & Spending"
+  @spending_dashboard = SpendingDashboardPresenter.new
+  erb :"/dashboards/spending_dashboard"
+end
+
+get "/dashboards/processing" do
+  @title = "Application Processing"
+  erb :"/dashboards/stub"
+end
+
+get "/application_list" do
+  @title = "Applications"
+  @application_list = ApplicationListPresenter.new(@params)
+  erb :"/list_views/application_list"
+end
+
+get "/applicant_list" do
+  @title = "Applicants"
+  @applicant_list = ApplicantListPresenter.new(@params)
+  erb :"/list_views/applicant_list"
+end
+
+get "/frn_list" do
+  @title = "Funding Requests"
+  @frn_list = FundingRequestListPresenter.new(@params)  
+  erb :"/list_views/frn_list"
 end
 
 get "/data_upload/new_upload" do
@@ -167,9 +203,9 @@ end
 helpers do
   def title
     if @title
-      "Test E-rate Dashboard: #{@title}"
+      "E-rate Dashboard Mock-Up: #{@title}"
     else
-      "Test E-rate Dashboard"
+      "E-rate Dashboard Mock-Up"
     end
   end
   

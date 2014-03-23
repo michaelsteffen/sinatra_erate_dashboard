@@ -1,0 +1,50 @@
+<h1>Applicants<br>
+<small>
+<% if @applicant_list.type && @applicant_list.type != "" %>
+	<strong>Type:</strong> <%= @applicant_list.type %>&nbsp;&nbsp;
+<% end %>
+</small></h1>
+<br>
+
+<%= erb :index_nav_partial, :locals => {
+	:nav_type => "top",
+	:page => @applicant_list.page, 
+	:num_pages => (@applicant_list.applicant_count/@applicant_list.page_len + 1).to_i, 
+	:num_records => @applicant_list.applicant_count,
+	:base_url => "/applicant_list?type=#{@applicant_list.type}&sort=#{@applicant_list.sort_code}&page_len=#{@applicant_list.page_len}/",
+	:sort => @applicant_list.sort_long_names[@applicant_list.sort_code], 
+	:sort_options => Array.new(@applicant_list.sort_long_names.keys.length){ |i|
+						{:label => @applicant_list.sort_long_names.values[i], 
+						 :link => "/applicant_list?type=#{@applicant_list.type}&sort=#{@applicant_list.sort_long_names.keys[i]}&page_len=#{@applicant_list.page_len}&page=1"} },
+	:page_len => @applicant_list.page_len, 
+	:page_len_options => Array.new(@applicant_list.page_len_options.length){ |i|
+							{:label => @applicant_list.page_len_options[i].to_s, 
+							 :link => "/applicant_list?type=#{@applicant_list.type}&sort=#{@applicant_list.sort_code}&page_len=#{@applicant_list.page_len_options[i].to_s}&page=#{(((@applicant_list.page-1)*@applicant_list.page_len/@applicant_list.page_len_options[i]).to_i+1).to_s}"} } } %>
+
+<small><table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>BEN</th>
+    <th>Name</th>
+    <th>State</th>
+    <th>P1 Request</th>
+    <th>P2 Request</th>
+  </tr></thead>
+<% @applicant_list.applicants.each do |appl| %>
+  <tr>
+    <td><%= appl.ben %></td>
+    <td><%= appl.applicant_name %></td>
+    <td><%= appl.applicant_state %></td>
+    <td>$ <%= number_with_delimiter(appl.p1_request.to_i) %></td>
+    <td>$ <%= number_with_delimiter(appl.p2_request.to_i) %></td>
+  </tr>
+<% end %>
+</table></small>
+
+<%= erb :index_nav_partial, :locals => {
+	:nav_type => "bottom",
+	:page => @applicant_list.page, 
+	:num_pages => (@applicant_list.applicant_count/@applicant_list.page_len + 1).to_i,
+	:num_records => @applicant_list.applicant_count,
+	:page_len => @applicant_list.page_len, 
+	:base_url => "/applicants/by_type/#{@applicant_list.type}/#{@applicant_list.sort_code}/#{@applicant_list.page_len}/" } %>
+

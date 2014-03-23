@@ -1,0 +1,51 @@
+<h1>Applications<br>
+<small>
+<% if @application_list.type && @application_list.type != "" %>
+	<strong>Type:</strong> <%= @application_list.type %>&nbsp;&nbsp;
+<% end %>
+</small></h1>
+<br>
+
+<%= erb :index_nav_partial, :locals => {
+	:nav_type => "top",
+	:page => @application_list.page, 
+	:num_pages => (@application_list.application_count/@application_list.page_len + 1).to_i, 
+	:num_records => @application_list.application_count,
+	:base_url => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len}",
+	:sort => @application_list.sort_long_names[@application_list.sort_code], 
+	:sort_options => Array.new(@application_list.sort_long_names.keys.length){ |i|
+						{:label => @application_list.sort_long_names.values[i], 
+						 :link => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_long_names.keys[i]}&page_len=#{@application_list.page_len}&page=1"} },
+	:page_len => @application_list.page_len, 
+	:page_len_options => Array.new(@application_list.page_len_options.length){ |i|
+							{:label => @application_list.page_len_options[i].to_s, 
+							 :link => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len_options[i].to_s}&page=#{(((@application_list.page-1)*@application_list.page_len/@application_list.page_len_options[i]).to_i+1).to_s}"} } } %>
+
+<small><table class="table table-hover table-condensed">
+  <thead><tr>
+    <th>App No</th>
+    <th>BEN</th>
+    <th>Applicant Name</th>
+    <th>State</th>
+    <th>Requested Support</th>
+  </tr></thead>
+<% @application_list.applications.each do |app| %>
+  <tr>
+    <td><%= '<a href="' + app.USAC_f471_URL + '">' %>
+      <%= app.f471_application_number %></a></td>
+    <td><%= app.ben %></td>
+    <td><%= app.applicant_name %></td>
+    <td><%= app.applicant_state %></td>
+    <td>$ <%= number_with_delimiter(app.total_req.to_i) %></td>
+  </tr>
+<% end %>
+</table></small>
+
+<%= erb :index_nav_partial, :locals => {
+	:nav_type => "bottom",
+	:page => @application_list.page, 
+	:num_pages => (@application_list.application_count/@application_list.page_len + 1).to_i,
+	:num_records => @application_list.application_count,
+	:page_len => @application_list.page_len, 
+	:base_url => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len}" } %>
+
