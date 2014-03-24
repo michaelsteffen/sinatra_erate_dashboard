@@ -1,13 +1,14 @@
 # to do:
+# - change order of speeds on spending page to start with 10 Gbps
+# - add totals to first applicant table?
+# - add totals to demand table
 # - create processing dashboard
 # - create infrastructure dashboard
 # - add block 4 table to applicant dashboard
 # - add entity count to applicant list
 # - add click-through for connection speed and type spending info
-# - add block 4 data
 # - highlight active section in nav
 # - refactor: add css classes to front page
-# - add totals to demand table
 # - add drill down for item 24 data
 # - better error handling for upload files
 #		- check that files are actually CSV files

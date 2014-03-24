@@ -28,7 +28,7 @@ class SpendingDashboardPresenter
 	else 
 		# pricing for individual service/bandwidth types
 		single_ctype_frns = FundingRequest.connection.select_all(@@queries[:single_ctype_frns_query])	
-		@conn_types = ['10 Mbps fiber', '100 Mbps fiber', '1 Gbps fiber', '10 Gbps fiber', 'T1/DS1 (1.5 Mbps)', 'T3/DS3 (45 Mbps)']
+		@conn_types = ['10 Gbps fiber', '1 Gbps fiber', '100 Mbps fiber', '10 Mbps fiber', 'T3/DS3 (45 Mbps)', 'T1/DS1 (1.5 Mbps)']
 		@single_ctype_stats = {}
 		conn_types.each do |conn_type|
 			frns = single_ctype_frns.select { |frn| frn['speed_type_category'] == conn_type}
