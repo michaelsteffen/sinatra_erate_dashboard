@@ -75,7 +75,7 @@
 <p><small><em>All dollar amounts in thousands.</em></small></p>
 
 <div class="page-header">
-<h3>Total Requested Funding: <strong>$<%= (@spending_dashboard.requested_funding["all"].to_f / 1000000).round(0) %> million</strong></h3>
+<h3>Total Requested Funding: <strong>$<%= number_to_human(@spending_dashboard.requested_funding["all"].to_i) %></strong></h3>
 </div>
 
 <p><table class="table table-hover table-condensed">
@@ -124,7 +124,7 @@
 <p><small><em>All dollar amounts in thousands</em></small></p>
 
 <div class="page-header">
-<h3>Total Pre-Discount Costs: <strong>$<%= (@spending_dashboard.prediscount_costs["all"].to_f / 1000000).round(0) %> million</strong></h3>
+<h3>Total Pre-Discount Costs: <strong>$<%= number_to_human(@spending_dashboard.prediscount_costs["all"].to_i) %></strong></h3>
 </div>
 
 <p><table class="table table-hover table-condensed">

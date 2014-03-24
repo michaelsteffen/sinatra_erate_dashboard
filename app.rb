@@ -1,5 +1,5 @@
 # to do:
-# - fix number display to reflect "billions" instead of thousands of millions
+# - change order of speeds on spending page to start with 10 Gbps
 # - add totals to first applicant table?
 # - add totals to demand table
 # - create processing dashboard
