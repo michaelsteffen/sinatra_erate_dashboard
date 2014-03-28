@@ -1,0 +1,26 @@
+<h1>Application Processing</h1>
+
+<p>All tables below reflect information as entered by applicants, without validation or error correction.</p>
+
+<div class="page-header">
+<h3>Application Processing Metrics</h3>
+</div>
+
+<p>
+<%= (@processing_dashboard.processing_metrics["lines"] * 100).round(0) %>% of 
+	<%= number_with_delimiter(@processing_dashboard.processing_denominators["lines"].to_i) %> 
+	high speed broadband (>50 Mbps) lines<br>
+	
+<%= (@processing_dashboard.processing_metrics["bband_dollars"] * 100).round(0) %>% of 
+	$<%= number_to_human(@processing_dashboard.processing_denominators["bband_dollars"]).downcase %> 
+	requested on FRNs that include high speed broadband (>50 Mbps)<br>
+	
+<%= (@processing_dashboard.processing_metrics["dollars"] * 100).round(0) %>% of 
+	$<%= number_to_human(@processing_dashboard.processing_denominators["dollars"]).downcase %>
+	requested on all FRNs<br>
+	
+<%= (@processing_dashboard.processing_metrics["apps"] * 100).round(0) %>% of 
+	<%= number_with_delimiter(@processing_dashboard.processing_denominators["apps"].to_i) %>
+	applications
+</p>
+

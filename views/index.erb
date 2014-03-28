@@ -62,8 +62,8 @@
 			<img src="images/icon_25603_lt.svg">
 		</div>
 		<div>
-			<p style="font-size: 90px; font-weight: bold; line-height:1">0%</p>
-			<p style="font-size: 30px; line-height:1;">of broadband requests</p>
+			<p style="font-size: 90px; font-weight: bold; line-height:1"><%= (@processing_small.processing_metrics["lines"] * 100).round(0) %>%</p>
+			<p style="font-size: 30px; line-height:1;">of broadband<br>requests</p>
 			<p style="margin: 15px 20px; font-size: 16px; color: #777;">for the 2014&#8209;15 school year have been reviewed by USAC <br></p>
 			<a href="dashboards/processing">More application processing info &raquo;</a>
         </div>
