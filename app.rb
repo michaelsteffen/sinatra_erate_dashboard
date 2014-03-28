@@ -104,7 +104,9 @@ get "/frn_list" do
 end
 
 get "/data_upload/new_upload" do
-  redirect "/working_upload" unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
+  unless Upload.where(:file_type => "DRT").last.import_status == "Complete" and Upload.where(:file_type => "Item24").last.import_status == "Complete"
+	flash.now[:alert] = "<strong>Careful!</strong> There is another upload ongoing; starting two simultaneous uploads could cause unpredictable results."
+  end
 
   @title = "Data Upload"
   erb :"/data_upload/new_upload"

@@ -18,7 +18,8 @@ class SpendingDashboardPresenter
 		frns.each do |frn|
 			# commented out line would calculate median of lines rather than median of requests
 			# conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} )
-			conn_prices << frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d
+			conn_prices << frn['orig_r_monthly_cost'].to_f/frn['number_of_lines'].to_f unless
+				(frn['orig_r_monthly_cost'].nil? || frn['number_of_lines'].nil? || frn['number_of_lines'].to_f == 0)
 			conn_lines += frn['number_of_lines'].to_i
 		end
 		@single_ctype_stats = {}
@@ -36,7 +37,8 @@ class SpendingDashboardPresenter
 			frns.each do |frn|
 				# commented out line would calculate median of lines rather than median of requests
 				# conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} ) 
-				conn_prices << frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d
+				conn_prices << frn['orig_r_monthly_cost'].to_f/frn['number_of_lines'].to_f unless
+					(frn['orig_r_monthly_cost'].nil? || frn['number_of_lines'].nil? || frn['number_of_lines'].to_f == 0)
 				conn_lines += frn['number_of_lines'].to_i
 			end
 			@single_ctype_stats[conn_type] = {}
