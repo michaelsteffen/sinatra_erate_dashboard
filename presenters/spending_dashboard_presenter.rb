@@ -5,7 +5,6 @@ class SpendingDashboardPresenter
   attr_reader :requests_by_speed, :multiple_speed, :speed_tier_names, :multiple_speeds
   attr_reader :requested_funding, :requests_by_apptype, :requests_by_discount, :prediscount_costs, :avg_discount
 
-  
   def initialize(init_type = :full)
 	self.initialize_query_strings
 

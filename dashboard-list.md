@@ -5,10 +5,12 @@ Infrastructure
 % schools by connection type
 % schools by speed/student
 
-% schools by speed
-% schools by connection type
+% libraries by speed
+% libraries by connection type
 
 Above by state
+
+
 
 Wifi requests by state
 
@@ -19,13 +21,13 @@ Days since window close
 Days to Labor Day (school start in many districts)
 
 Percent process (bar chart) by:
-- High-speed lines
-- High-speed dollars
-- Total dollars
-- Number of application
+x High-speed lines
+x High-speed dollars
+x Total dollars
+x Number of application
 
-Consortium applications:
-- [same]
+Percent processed (bar chart) by type
+- Total dollars
 
 Average days for processed applications
 Average days for processed consortium applications

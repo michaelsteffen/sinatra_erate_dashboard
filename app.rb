@@ -29,6 +29,9 @@
 # - normalize data structure?
 # - move to database.yml for configuration?
 
+require 'rubygems'
+require "bundler/setup"
+
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/flash'
@@ -50,6 +53,7 @@ get "/" do
   	@title = "Welcome"
   	@applicant_small = ApplicantDashboardPresenter.new(:small)
   	@spending_small = SpendingDashboardPresenter.new(:small)
+  	@processing_small = ProcessingDashboardPresenter.new(:small)
   	erb :"index"
 end
 
@@ -76,7 +80,9 @@ end
 
 get "/dashboards/processing" do
   @title = "Application Processing"
-  erb :"/dashboards/stub"
+  
+  @processing_dashboard = ProcessingDashboardPresenter.new
+  erb :"/dashboards/processing_dashboard"
 end
 
 get "/application_list" do
