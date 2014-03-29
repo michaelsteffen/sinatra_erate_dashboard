@@ -6,7 +6,8 @@
 <h3>Broadband Prices</h3>
 </div>
 
-<table class="table table-hover table-condensed table-responsive">
+<div class="table-responsive">
+<table class="table table-hover table-condensed">
   <thead><tr>
     <th>Connection Type</th>
     <th>Lines</th>
@@ -24,6 +25,7 @@
   </tr>
 <% end %> 
 </table> 
+</div>
 
 <p><small><em>Data based only on funding requests containing a single connection type & speed.  For requests that contain multiple connection types or speeds, the data we collect do not currently allow us to allocate costs to the different connections. In addition, our current data do not allow us to seperately identify those funding requests that bundle phone service with broadband; to the extent applicants do so, the prices above overestimate broadband pricing.</em></small></p>
 
@@ -33,7 +35,8 @@
 <p>Total requests associated with "item 24" submissions, excluding cellular-only requests.  $<%= (@spending_dashboard.item24_requests.to_f / 1000000).round(0) %> million in total requests, or <%= (@spending_dashboard.percent_of_p1 * 100).round(0) %>%</strong> of all Priority 1 funding requests.  However, all dollar totals include phone service to the extent it is bundled on the same funding request with data connections.</p>
 <br>
 
-<table class="table table-hover table-condensed table-responsive">
+<div class="table-responsive">
+<table class="table table-hover table-condensed">
   <thead><tr>
     <th>Connection Type (by Funding Request)</th>
     <th style="border-top: 0px">Lines</th>
@@ -69,8 +72,8 @@
     <td><%= number_with_delimiter(@spending_dashboard.multiple_speeds["lines"].to_i) %></td>
     <td>$ <%= number_with_delimiter((@spending_dashboard.multiple_speeds["request"].to_f / 1000).round(0)) %></td>
   </tr>
-
 </table>
+</div>
 
 <p><small><em>All dollar amounts in thousands.</em></small></p>
 
@@ -78,7 +81,8 @@
 <h3>Total Requested Funding: <strong>$<%= number_to_human(@spending_dashboard.requested_funding["all"].to_i) %></strong></h3>
 </div>
 
-<p><table class="table table-hover table-condensed table-responsive">
+<div class="table-responsive">
+<table class="table table-hover table-condensed">
   <thead><tr>
     <th>Application Type</th>
     <th>P1 Requests</th>
@@ -119,7 +123,8 @@
     	  <%= number_with_delimiter((app_type["total_request"].to_f / 1000).round(0)) %></a></td>
   </tr>
 <% end %>
-</table></p>
+</table>
+</div>
 
 <p><small><em>All dollar amounts in thousands</em></small></p>
 
@@ -127,7 +132,8 @@
 <h3>Total Pre-Discount Costs: <strong>$<%= number_to_human(@spending_dashboard.prediscount_costs["all"].to_i) %></strong></h3>
 </div>
 
-<p><table class="table table-hover table-condensed table-responsive">
+<div class="table-responsive">
+<table class="table table-hover table-condensed">
   <thead><tr>
   	<th></th>
     <th>Priority 1</th>
@@ -146,6 +152,7 @@
     <td><%= (@spending_dashboard.avg_discount["p2"] * 100).to_i %>%</td>
     <td><%= (@spending_dashboard.avg_discount["all"] * 100).to_i %>%</td>
   </tr>
-</table></p>
+</table>
+</div>
 
 <p><small><em>All dollar amounts in thousands</em></small></p>
