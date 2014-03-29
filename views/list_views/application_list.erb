@@ -21,7 +21,7 @@
 							{:label => @application_list.page_len_options[i].to_s, 
 							 :link => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len_options[i].to_s}&page=#{(((@application_list.page-1)*@application_list.page_len/@application_list.page_len_options[i]).to_i+1).to_s}"} } } %>
 
-<small><table class="table table-hover table-condensed">
+<small><table class="table table-hover table-condensed table-responsive">
   <thead><tr>
     <th>App No</th>
     <th>BEN</th>
