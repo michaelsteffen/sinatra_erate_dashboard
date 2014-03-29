@@ -21,7 +21,7 @@
 							{:label => @applicant_list.page_len_options[i].to_s, 
 							 :link => "/applicant_list?type=#{@applicant_list.type}&sort=#{@applicant_list.sort_code}&page_len=#{@applicant_list.page_len_options[i].to_s}&page=#{(((@applicant_list.page-1)*@applicant_list.page_len/@applicant_list.page_len_options[i]).to_i+1).to_s}"} } } %>
 
-<small><table class="table table-hover table-condensed">
+<small><table class="table table-hover table-condensed table-responsive">
   <thead><tr>
     <th>BEN</th>
     <th>Name</th>

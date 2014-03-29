@@ -6,7 +6,7 @@
 <h3>Broadband Prices</h3>
 </div>
 
-<table class="table table-hover table-condensed">
+<table class="table table-hover table-condensed table-responsive">
   <thead><tr>
     <th>Connection Type</th>
     <th>Lines</th>
@@ -33,7 +33,7 @@
 <p>Total requests associated with "item 24" submissions, excluding cellular-only requests.  $<%= (@spending_dashboard.item24_requests.to_f / 1000000).round(0) %> million in total requests, or <%= (@spending_dashboard.percent_of_p1 * 100).round(0) %>%</strong> of all Priority 1 funding requests.  However, all dollar totals include phone service to the extent it is bundled on the same funding request with data connections.</p>
 <br>
 
-<table class="table table-hover table-condensed">
+<table class="table table-hover table-condensed table-responsive">
   <thead><tr>
     <th>Connection Type (by Funding Request)</th>
     <th style="border-top: 0px">Lines</th>
@@ -78,7 +78,7 @@
 <h3>Total Requested Funding: <strong>$<%= number_to_human(@spending_dashboard.requested_funding["all"].to_i) %></strong></h3>
 </div>
 
-<p><table class="table table-hover table-condensed">
+<p><table class="table table-hover table-condensed table-responsive">
   <thead><tr>
     <th>Application Type</th>
     <th>P1 Requests</th>
@@ -127,7 +127,7 @@
 <h3>Total Pre-Discount Costs: <strong>$<%= number_to_human(@spending_dashboard.prediscount_costs["all"].to_i) %></strong></h3>
 </div>
 
-<p><table class="table table-hover table-condensed">
+<p><table class="table table-hover table-condensed table-responsive">
   <thead><tr>
   	<th></th>
     <th>Priority 1</th>
