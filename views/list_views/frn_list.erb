@@ -33,7 +33,8 @@
 							{:label => @frn_list.page_len_options[i].to_s, 
 							 :link => "frn_list?type=#{@frn_list.type}&priority=#{@frn_list.priority}&discount=#{@frn_list.discount_band}&sort=#{@frn_list.sort_code}&page_len=#{@frn_list.page_len_options[i].to_s}&page=#{(((@frn_list.page-1)*@frn_list.page_len/@frn_list.page_len_options[i]).to_i+1).to_s}"} } } %>
 
-<small><table class="table table-hover table-condensed table-responsive">
+<div class="table-responsive">
+<small><table class="table table-hover table-condensed">
   <thead><tr>
     <th>App No</th>
     <th>FRN</th>
@@ -56,6 +57,7 @@
   </tr>
 <% end %>
 </table></small>
+</div>
 
 <%= erb :index_nav_partial, :locals => {
 	:nav_type => "bottom",
