@@ -113,7 +113,7 @@ class SpendingDashboardPresenter
 			   WHERE frn IN (SELECT frn FROM frn_num_connection_types WHERE count_types = 1) AND
 				type_of_connections != 'Cellular Wireless' 
 			   GROUP BY frn, type_of_connections
-			   HAVING SUM(number_of_lines) <= 5000 ) AS t1 
+			   HAVING SUM(number_of_lines) < 5000 ) AS t1 
 			   LEFT JOIN funding_requests ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED'
 		GROUP BY type_of_connections
@@ -132,7 +132,7 @@ class SpendingDashboardPresenter
 			   FROM connections
 			   WHERE frn IN (SELECT frn FROM frn_num_connection_types WHERE count_types > 1) 
 			   GROUP BY frn 
-			   HAVING SUM(number_of_lines) <= 5000 ) AS t1 
+			   HAVING SUM(number_of_lines) < 5000 ) AS t1 
 		LEFT JOIN funding_requests
 		ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED';
@@ -158,7 +158,7 @@ class SpendingDashboardPresenter
 			   WHERE frn IN (SELECT frn FROM frn_num_speeds WHERE count_speeds = 1) AND 
 			    type_of_connections != 'Cellular Wireless' 
 			   GROUP BY frn, speed_tier 
-			   HAVING SUM(number_of_lines) <= 5000 ) AS t1 
+			   HAVING SUM(number_of_lines) < 5000 ) AS t1 
 			   LEFT JOIN funding_requests ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED'
 		GROUP BY t1.speed_tier
@@ -178,7 +178,7 @@ class SpendingDashboardPresenter
 			   WHERE frn IN (SELECT frn FROM frn_num_speeds WHERE count_speeds > 1) AND
 				type_of_connections != 'Cellular Wireless' 
 			   GROUP BY frn 
-			   HAVING SUM(number_of_lines) <= 5000 ) AS t1 
+			   HAVING SUM(number_of_lines) < 5000 ) AS t1 
 		LEFT JOIN funding_requests ON t1.frn = funding_requests.frn
 		WHERE funding_requests.f471_form_status = 'CERTIFIED';
 		endquery
@@ -202,7 +202,7 @@ class SpendingDashboardPresenter
 			END AS speed_type_category
 		FROM connections LEFT JOIN funding_requests ON connections.frn = funding_requests.frn
 		WHERE connections.frn IN (SELECT frn FROM single_connection_type_frns) AND
-			connections.number_of_lines <= 5000
+			connections.number_of_lines < 5000
 		endquery
 	
 		@@queries[:requested_funding_query] = <<-endquery	

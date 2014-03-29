@@ -56,14 +56,16 @@ class ProcessingDashboardPresenter
 		FROM connections LEFT JOIN funding_requests ON connections.frn = funding_requests.frn
 		WHERE commitment_status IS NOT NULL 
 			AND #{@@broadband_def} 
-			AND funding_requests.f471_form_status = 'CERTIFIED';
+			AND funding_requests.f471_form_status = 'CERTIFIED'
+			AND number_of_lines < 5000;
 		endquery
 
   	@@queries[:all_lines_query] = <<-endquery
 		SELECT SUM(number_of_lines) 
 		FROM connections LEFT JOIN funding_requests ON connections.frn = funding_requests.frn
 		WHERE #{@@broadband_def} 
-			AND funding_requests.f471_form_status = 'CERTIFIED';
+			AND funding_requests.f471_form_status = 'CERTIFIED'
+			AND number_of_lines < 5000;
 		endquery
 	
 	@@queries[:processed_bband_dollars_query] = <<-endquery
