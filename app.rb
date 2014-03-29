@@ -1,8 +1,8 @@
 # to do:
-# - change order of speeds on spending page to start with 10 Gbps
+# - finish first draft of processing dashboard
+# - add funding request count to prices table
 # - add totals to first applicant table?
 # - add totals to demand table
-# - create processing dashboard
 # - create infrastructure dashboard
 # - add block 4 table to applicant dashboard
 # - add entity count to applicant list
