@@ -6,14 +6,21 @@
 <h3>Application Processing Metrics</h3>
 </div>
 
-<p>
+<strong>
 <%= (@processing_dashboard.processing_metrics["lines"] * 100).round(0) %>% of 
 	<%= number_with_delimiter(@processing_dashboard.processing_denominators["lines"].to_i) %> 
-	high speed broadband (>50 Mbps) lines<br>
+	high speed broadband lines (lines > 50 Mbps)
+</strong>
+
+<div>
+<div class="progress">
+  <div class="progress-bar" style="width: 60%;"><span>52,123 lines</span></div>
+</div>
+</div>
 	
 <%= (@processing_dashboard.processing_metrics["bband_dollars"] * 100).round(0) %>% of 
 	$<%= number_to_human(@processing_dashboard.processing_denominators["bband_dollars"]).downcase %> 
-	requested on FRNs that include high speed broadband (>50 Mbps)<br>
+	requested on FRNs that include high speed broadband (lines > 50 Mbps)<br>
 	
 <%= (@processing_dashboard.processing_metrics["dollars"] * 100).round(0) %>% of 
 	$<%= number_to_human(@processing_dashboard.processing_denominators["dollars"]).downcase %>
@@ -22,5 +29,4 @@
 <%= (@processing_dashboard.processing_metrics["apps"] * 100).round(0) %>% of 
 	<%= number_with_delimiter(@processing_dashboard.processing_denominators["apps"].to_i) %>
 	applications
-</p>
 
