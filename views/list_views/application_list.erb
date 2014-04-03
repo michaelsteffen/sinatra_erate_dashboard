@@ -11,15 +11,15 @@
 	:page => @application_list.page, 
 	:num_pages => (@application_list.application_count/@application_list.page_len + 1).to_i, 
 	:num_records => @application_list.application_count,
-	:base_url => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len}",
+	:base_url => "/application_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len}",
 	:sort => @application_list.sort_long_names[@application_list.sort_code], 
 	:sort_options => Array.new(@application_list.sort_long_names.keys.length){ |i|
 						{:label => @application_list.sort_long_names.values[i], 
-						 :link => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_long_names.keys[i]}&page_len=#{@application_list.page_len}&page=1"} },
+						 :link => "/application_list?type=#{@application_list.type}&sort=#{@application_list.sort_long_names.keys[i]}&page_len=#{@application_list.page_len}&page=1"} },
 	:page_len => @application_list.page_len, 
 	:page_len_options => Array.new(@application_list.page_len_options.length){ |i|
 							{:label => @application_list.page_len_options[i].to_s, 
-							 :link => "/app_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len_options[i].to_s}&page=#{(((@application_list.page-1)*@application_list.page_len/@application_list.page_len_options[i]).to_i+1).to_s}"} } } %>
+							 :link => "/application_list?type=#{@application_list.type}&sort=#{@application_list.sort_code}&page_len=#{@application_list.page_len_options[i].to_s}&page=#{(((@application_list.page-1)*@application_list.page_len/@application_list.page_len_options[i]).to_i+1).to_s}"} } } %>
 
 <div class="table-responsive">
 <small><table class="table table-hover table-condensed">
