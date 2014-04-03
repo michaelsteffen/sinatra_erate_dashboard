@@ -33,19 +33,22 @@ class SpendingDashboardPresenter
 		conn_types.each do |conn_type|
 			frns = single_ctype_frns.select { |frn| frn['speed_type_category'] == conn_type}
 			conn_prices = []
-			conn_lines = 0
+			conn_lines = conn_total_requests = 0
 			frns.each do |frn|
 				# commented out line would calculate median of lines rather than median of requests
 				# conn_prices.concat( Array.new(frn['number_of_lines'].to_i) {frn['orig_r_monthly_cost'].to_d/frn['number_of_lines'].to_d} ) 
 				conn_prices << frn['orig_r_monthly_cost'].to_f/frn['number_of_lines'].to_f unless
 					(frn['orig_r_monthly_cost'].nil? || frn['number_of_lines'].nil? || frn['number_of_lines'].to_f == 0)
 				conn_lines += frn['number_of_lines'].to_i
+				conn_total_requests += frn['orig_r_monthly_cost'].to_f
 			end
 			@single_ctype_stats[conn_type] = {}
 			@single_ctype_stats[conn_type]['price_p25'] = percentile(conn_prices, 25)
 			@single_ctype_stats[conn_type]['price_median'] = percentile(conn_prices, 50)
 			@single_ctype_stats[conn_type]['price_p75'] = percentile(conn_prices, 75)
 			@single_ctype_stats[conn_type]['lines'] = conn_lines
+			@single_ctype_stats[conn_type]['total_requests'] = conn_total_requests
+			@single_ctype_stats[conn_type]['frns'] = frns.length
 		end
 		
 		# requested funding by connection type and connection speed
@@ -205,14 +208,14 @@ class SpendingDashboardPresenter
 			connections.number_of_lines < 5000
 		endquery
 	
-		@@queries[:requested_funding_query] = <<-endquery	
-		SELECT 
-			SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_commitment_request END) AS p1_request,
-			SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_commitment_request END) AS p2_request,
-			SUM(orig_commitment_request) AS total_request
-		FROM funding_requests
-		WHERE f471_form_status = 'CERTIFIED';
-		endquery
+	@@queries[:requested_funding_query] = <<-endquery	
+	SELECT 
+		SUM(CASE WHEN orig_category_of_service IN ('TELCOMM SERVICES','INTERNET ACCESS') THEN orig_commitment_request END) AS p1_request,
+		SUM(CASE WHEN orig_category_of_service IN ('INTERNAL CONNECTIONS','INTERNAL CONNECTIONS MNT') THEN orig_commitment_request END) AS p2_request,
+		SUM(orig_commitment_request) AS total_request
+	FROM funding_requests
+	WHERE f471_form_status = 'CERTIFIED';
+	endquery
 
 	@@queries[:requests_by_apptype_query] = <<-endquery			
 		SELECT application_type,

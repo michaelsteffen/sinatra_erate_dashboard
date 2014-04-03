@@ -10,16 +10,21 @@
 <table class="table table-hover table-condensed">
   <thead><tr>
     <th>Connection Type</th>
+    <th>FRNs</th>
     <th>Lines</th>
     <th>Median Price</th>
+    <th>Avg Price</th>
     <th>25th Percentile</th>
     <th>75th Percentile</th>
   </tr></thead>
 <% @spending_dashboard.conn_types.each do |ctype| %>
   <tr>
   	<td><%= ctype %></td>
+  	 <td><%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['frns']) %></td>
     <td><%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['lines']) %></td>
     <td>$ <%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['price_median'].round(0).to_i) %></td>
+    <td>$ <%= number_with_delimiter((@spending_dashboard.single_ctype_stats[ctype]['total_requests'] / 
+    	 	 @spending_dashboard.single_ctype_stats[ctype]['lines']).round(0).to_i) %></td>
     <td>$ <%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['price_p25'].round(0).to_i) %></td>
     <td>$ <%= number_with_delimiter(@spending_dashboard.single_ctype_stats[ctype]['price_p75'].round(0).to_i) %></td>
   </tr>
@@ -27,7 +32,7 @@
 </table> 
 </div>
 
-<p><small><em>Data based only on funding requests containing a single connection type & speed.  For requests that contain multiple connection types or speeds, the data we collect do not currently allow us to allocate costs to the different connections. In addition, our current data do not allow us to seperately identify those funding requests that bundle phone service with broadband; to the extent applicants do so, the prices above overestimate broadband pricing.</em></small></p>
+<p><small><em>Data based only on funding requests containing a single connection type & speed.  For requests that contain multiple connection types or speeds, the data we collect do not currently allow us to allocate costs to the different connections. In addition, our current data do not allow us to seperately identify those funding requests that bundle phone service with broadband; to the extent applicants do so, the prices above overestimate broadband pricing.  Percentile price statistics (median, 25, 75th percentile) are calculated across funding requests -- i.e., not weighted by lines.  Average price is weighted by lines.</em></small></p>
 
 <div class="page-header">
 <h3>Connectivity-Related Funding Requests</h3>
