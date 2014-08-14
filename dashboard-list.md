@@ -10,9 +10,8 @@ Infrastructure
 
 Above by state
 
+WiFi requests by state
 
-
-Wifi requests by state
 
 Processing
 ----------
